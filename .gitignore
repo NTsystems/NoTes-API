@@ -1,0 +1,7 @@
+# python stuff
+*.py[cod]
+api-env/
+
+# General
+.DS_Store
+.vagrant/

@@ -2,6 +2,13 @@
 *.py[cod]
 api-env/
 
+# Testing
+.coverage
+htmlcov/
+
+# Sphinx
+docs/_build/
+
 # General
 .DS_Store
 .vagrant/

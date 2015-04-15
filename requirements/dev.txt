@@ -1,5 +1,9 @@
 -r common.txt
 
-# utilities
-
 # test libraries
+coverage==3.7.1
+mock==1.0.1
+
+# docs
+sphinx_rtd_theme==0.1.6
+sphinxcontrib-napoleon==0.3.1

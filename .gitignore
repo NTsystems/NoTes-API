@@ -1,6 +1,13 @@
 # python stuff
 *.py[cod]
-api-env/
+env/
+
+# Testing
+.coverage
+htmlcov/
+
+# Sphinx
+docs/_build/
 
 # General
 .DS_Store

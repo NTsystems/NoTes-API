@@ -2,7 +2,7 @@
 import os
 
 # Development mode?
-DEBUG = True
+DEBUG = os.environ.get("DEBUG", True)
 
 # local project paths
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -62,7 +62,7 @@ TEMPLATES = [
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'notes-db',
+        'NAME': 'postgres',
         'USER': 'ntsystems',
         'PASSWORD': 'ntsystems',
         'HOST': '0.0.0.0',

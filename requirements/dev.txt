@@ -1,8 +1,5 @@
 -r common.txt
 
-# utilities
-Fabric==1.10.1
-
 # test libraries
 coverage==3.7.1
 mock==1.0.1

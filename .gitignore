@@ -1,6 +1,6 @@
 # python stuff
 *.py[cod]
-api-env/
+env/
 
 # Testing
 .coverage

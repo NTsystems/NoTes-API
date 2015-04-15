@@ -28,6 +28,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
             # install dev tools
             apt-get install -y python-dev python-pip python-virtualenv libpq-dev
+            pip install fabric
 
             # install docker
             apt-get install -y lxc-docker

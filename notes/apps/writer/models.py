@@ -14,13 +14,14 @@ class Notebook(models.Model):
 
 
 class Note(models.Model):
-    """class
+    """This class shows how the note appears
+
     """
 
     title = models.CharField(max_length=30)
     contents = models.TextField(blank = True)
-    date_of_create = models.DateField.auto_now_add('creation date')
-    last_modified = models.DateTimeField.auto_now()
+    date_of_create = models.DateField(verbose_name='creation date', auto_now_add = True)
+    last_modified = models.DateTimeField(auto_now = True)
     notebook = models.ForeignKey(Notebook)
 
     def __str__(self):

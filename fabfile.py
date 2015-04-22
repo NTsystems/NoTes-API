@@ -36,6 +36,11 @@ def make_env():
         local("pip install -r ./requirements/dev.txt")
 
 
+def create_admin():
+    """Creates admin account."""
+    _manage("createsuperuser")
+
+
 def migrate():
     """Performs database migrations."""
     _manage("makemigrations")

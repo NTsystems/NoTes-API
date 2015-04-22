@@ -15,7 +15,8 @@ class UserManager(BaseUserManager):
         e_mail = self.normalize_email(e_mail)
         user = self.model(e_mail=e_mail,
                           is_staff=is_staff, is_active=True,
-                          is_superuser=is_superuser, last_login=now, date_joined=now, **extra_fields)
+                          is_superuser=is_superuser, last_login=now, **extra_fields)
+
         user.set_password(password)
         user.save()
         return user
@@ -32,12 +33,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     e_mail = models.EmailField(unique=True)
     is_admin = models.BooleanField(default=False)
 
-    is_staff = models.BooleanField('staff status', default=False,
-        help_text=('Designates whether the user can log into this admin site.'))
-    is_active = models.BooleanField('active', default=True,
-        help_text=('Designates whether this user should be treated as active. Unselect this instead of deleting accounts.'))
-
-    date_joined = models.DateTimeField('date joined', default=timezone.now)
+    is_staff = models.BooleanField('staff status', default=False)
+    is_active = models.BooleanField('active', default=True)
 
     objects = UserManager()
 
@@ -48,7 +45,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.e_mail
 
     # class Meta:
-    #     permission = ('change_password',)
+    #     permission = ('change_password',)cd.
 
 
 class UserProfile(models.Model):
@@ -56,7 +53,7 @@ class UserProfile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL)
     first_name = models.CharField(max_length=30, blank=True)
     last_name = models.CharField(max_length=30, blank=True)
-    date_of_birth = models.DateField(blank=True)
+    date_of_birth = models.DateField(blank=True, Null=True)
     place = models.CharField(max_length=50, blank=True)
     state = models.CharField(verbose_name='country', max_length=50, blank=True)
 

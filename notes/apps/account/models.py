@@ -4,11 +4,12 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Permis
 
 from django.utils import timezone
 
+
 class UserManager(BaseUserManager):
+
+
     def _create_user(self, e_mail, password, is_staff, is_superuser, **extra_fields):
-        """
-        Creates and saves a User with the given email and password.
-        """
+        """Creates and saves a User with the given email and password."""
         now = timezone.now()
         if not e_mail:
             raise ValueError('Users must have an email address')
@@ -28,6 +29,7 @@ class UserManager(BaseUserManager):
     def create_superuser(self, e_mail, password, **extra_fields):
         return self._create_user(e_mail, password, True, True,
                                  **extra_fields)
+
 
 class User(AbstractBaseUser, PermissionsMixin):
     e_mail = models.EmailField(unique=True)
@@ -53,7 +55,7 @@ class UserProfile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL)
     first_name = models.CharField(max_length=30, blank=True)
     last_name = models.CharField(max_length=30, blank=True)
-    date_of_birth = models.DateField(blank=True, Null=True)
+    date_of_birth = models.DateField(blank=True, null=True)
     place = models.CharField(max_length=50, blank=True)
     state = models.CharField(verbose_name='country', max_length=50, blank=True)
 

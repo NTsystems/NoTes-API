@@ -28,6 +28,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'notes.apps.account',
+    'rest_framework',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -70,6 +71,7 @@ DATABASES = {
         'PORT': '5432'
     }
 }
+
 
 # default language
 LANGUAGE_CODE = 'en-us'

@@ -4,6 +4,9 @@ from django.conf import settings
 
 
 class Notebook(models.Model):
+    """
+
+    """
 
     name = models.CharField(max_length=30, unique=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL)

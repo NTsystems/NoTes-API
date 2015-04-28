@@ -1,5 +1,5 @@
 from django.contrib import admin
-from notes.apps.writer import Notebook, Note
+from notes.apps.writer.models import Notebook, Note
 
 
 class NoteAdmin(admin.ModelAdmin):

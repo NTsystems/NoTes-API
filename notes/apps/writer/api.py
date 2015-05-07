@@ -3,80 +3,98 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from notes.apps.writer.models import Note, Notebook
 from notes.apps.writer.resources import NotebookSerializer, NoteSerializer
-from django.http import Http404
-
+from django.shortcuts import get_object_or_404
 
 
 class NotebookList(APIView):
+    """Create notebook or retrieve all notebooks"""
 
-    def get(self, request, format=None):
+    def get(self, request):
         """List all notebooks"""
+
         notebooks = Notebook.objects.all()
+        if not notebooks:
+            return Response(status = status.HTTP_404_NOT_FOUND)
         serializer = NotebookSerializer(notebooks, many=True)
         return Response(serializer.data, status = status.HTTP_200_OK)
 
-    def post(self, request, format = None):
+
+    def post(self, request):
         """Create notebook"""
-        serializer = NotebookSerializer(data = request.data)
+
+        serializer = NotebookSerializer(data = request.data, context={'request': request})
         if serializer.is_valid():
-            serializer.save()
+            serializer.save(user = request.user)
             return Response(serializer.data, status = status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
 
 
+
 class NotebookDetail(APIView):
+    """Read notebook and delete notebook with notebook_id """
 
-    def get_objects(self, id):
+    def get(self, request, notebook_id):
+        """Retrieve notebook with notebook_id"""
 
-        try:
-            return Notebook.objects.get(pk = id)
-        except Notebook.DoesNotExist:
-            raise Http404
-
-    def get(self, request, id, format= None):
-        notebook = self.get_objects(id)
-        serialiazer = NotebookSerializer(notebook)
-        return Response(serialiazer.data, status = status.HTTP_200_OK)
+        notebook = get_object_or_404(Notebook, id = notebook_id)
+        serializer = NotebookSerializer(notebook)
+        return Response(serializer.data, status = status.HTTP_200_OK)
 
 
-    def delete(self, request, id, format= None):
-        """Delete notebook"""
-        notebook = self.get_objects(id)
+    def delete(self, request, notebook_id):
+        """Delete notebook with notebook_id"""
+
+        notebook = get_object_or_404(Notebook, id = notebook_id)
         notebook.delete()
         return Response(status = status.HTTP_204_NO_CONTENT)
 
 
-class NoteList(APIView):
 
-    def get(self, request, format = None):
-        """List all notes from notebook ID"""
-        notes = Note.objects.all()
+class NoteList(APIView):
+    """List all notes from notebook with notebook_id or create new note"""
+
+    def get(self, request, notebook_id):
+        """List all notes from notebook_id"""
+
+        get_object_or_404(Notebook, id = notebook_id)
+        notes = Note.objects.all().filter(notebook_id = notebook_id)
+        # if not notes:
+        #     return Response(status = status.HTTP_404_NOT_FOUND)
         serializer = NoteSerializer(notes, many=True)
         return Response(serializer.data, status = status.HTTP_200_OK)
 
-    def post(self, request, format = None):
-        """Create note """
+
+    def post(self, request, notebook_id):
+        """Create note in notebook with notebook_id  """
+
+        notebook = Notebook.objects.get(id = notebook_id)
         serializer = NoteSerializer(data = request.data)
         if serializer.is_valid():
-            serializer.save()
+            serializer.save(notebook = notebook)
             return Response(serializer.data, status = status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
 
 
+
 class NoteDetail(APIView):
+    """Update note or delete note from notebook_id"""
 
-    def get_object(self, pk):
+    def get(self, request, notebook_id, id):
+        """Read note with note_id"""
+        get_object_or_404(Notebook, id = notebook_id)
+        note = Note.objects.all().filter(notebook_id = notebook_id)
+        note = get_object_or_404(Note, pk = id)
+        serializer = NoteSerializer(note)
+        return Response(serializer.data, status = status.HTTP_200_OK)
 
-        try:
-            return Note.objects.get(pk = pk)
-        except Note.DoesNotExist:
-            raise Http404
 
-    def put(self, request, pk, format=None):
+    def put(self, request, notebook_id, id):
         """Update note"""
-        note = self.get_object(pk)
+        get_object_or_404(Notebook, id = notebook_id)
+        note = Note.objects.all().filter(notebook_id = notebook_id)
+        note = get_object_or_404(Note, pk = id)
         serializer = NoteSerializer(note, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -84,9 +102,13 @@ class NoteDetail(APIView):
 
         return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request, pk, format = None):
+
+    def delete(self, request, id, notebook_id):
         """Delete note"""
-        note = self.get_object(pk)
+
+        get_object_or_404(Notebook, id = notebook_id)
+        note = Note.objects.all().filter(notebook_id = notebook_id)
+        note = get_object_or_404(Note, pk = id)
         note.delete()
         return  Response(status = status.HTTP_204_NO_CONTENT)
 

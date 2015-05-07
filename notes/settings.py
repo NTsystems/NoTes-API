@@ -21,6 +21,7 @@ WSGI_APPLICATION = 'notes.wsgi.application'
 # dependencies
 #
 INSTALLED_APPS = (
+    'rest_framework.authtoken',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -29,6 +30,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'notes.apps.account',
     'rest_framework',
+
 )
 
 MIDDLEWARE_CLASSES = (
@@ -72,6 +74,12 @@ DATABASES = {
     }
 }
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+        #'rest_framework.authentication.SessionAuthentication',
+    ),
+}
 
 # default language
 LANGUAGE_CODE = 'en-us'

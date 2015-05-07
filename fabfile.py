@@ -47,6 +47,18 @@ def migrate():
     _manage("migrate")
 
 
+def test(app=None):
+    """Runs unit tests.
+
+    Args:
+        app (string): App to run tests for.
+    """
+    if app:
+        _manage("test {}".format(app))
+    else:
+        _manage("test")
+
+
 def run():
     """Starts development server."""
     local_ip = "0.0.0.0:8000"

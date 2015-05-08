@@ -1,9 +1,9 @@
-from rest_framework.test import APITestCase
+from rest_framework.test import APITestCase, APIClient
 from notes.apps.account.models import User, UserProfile
 from rest_framework import status
 import json
-from rest_framework.test import APIClient
 from rest_framework.authtoken.models import Token
+from django.core.urlresolvers import reverse
 
 
 class UserTests(APITestCase):
@@ -14,7 +14,7 @@ class UserTests(APITestCase):
         }
 
 
-        response = self.client.post('/api/users/', json.dumps(data), content_type='application/json')
+        response = self.client.post(reverse('register'), json.dumps(data), content_type='application/json')
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
@@ -24,7 +24,7 @@ class UserTests(APITestCase):
             "password": "1234",
         }
 
-        response = self.client.post('/api/users/', json.dumps(data), content_type='application/json')
+        response = self.client.post(reverse('register'), json.dumps(data), content_type='application/json')
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
@@ -34,7 +34,7 @@ class UserTests(APITestCase):
             "password": "",
         }
 
-        response = self.client.post('/api/users/', json.dumps(data), content_type='application/json')
+        response = self.client.post(reverse('register'), json.dumps(data), content_type='application/json')
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
@@ -49,7 +49,7 @@ class TokenTests(APITestCase):
         user = User.objects.get(e_mail="test@test.com")
         print Token.objects.get(user_id=user.id)
 
-        response = self.client.post('/api/tokens/', {'e_mail': 'test@test.com', 'password':'testpassword'})
+        response = self.client.post(reverse('login'), {'e_mail': 'test@test.com', 'password':'testpassword'})
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
@@ -57,40 +57,107 @@ class TokenTests(APITestCase):
         user = User.objects.get(e_mail="test@test.com")
         print Token.objects.get(user_id=user.id)
 
-        response = self.client.post('/api/tokens/', {'e_mail': 'test', 'password':'testpassword'})
+        response = self.client.post(reverse('login'), {'e_mail': 'test', 'password':'testpassword'})
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
 
 class UpdateTests(APITestCase):
     def setUp(self):
-        user = User.objects.create_user(e_mail="test@test.com", password="testpassword")
-        user.save()
+        self.user = User.objects.create_user(e_mail="test@test.com", password="testpassword")
+        self.user.save()
         self.client = APIClient()
-        self.client.login(e_mail="test@test.com", password="testpassword")
-        # token = Token.objects.get(user__e_mail="test@test.com")
-        # self.client.credentials(HTTP_AUTHORIZATION="Token " + token.key)
-        # id = user.id
-        profile = UserProfile.objects.create(first_name="nesto",
-                                             last_name="neko",
-                                             date_of_birth="2001-02-02",
-                                             place="negde", state="nigde", user_id="1")
-        profile.save()
 
 
     def test_update_profile(self):
-        profile = {
-            "first_name": "Ime",
-                "last_name": "Prezime",
-                "date_of_birth": "2001-02-02",
-                "place": "mesto", "state": "drzava"
-        }
+        self.client.login(e_mail="test@test.com", password="testpassword")
+        id = self.user.id
+        token = Token.objects.get(user_id=self.user.id)
+        self.client.credentials(HTTP_AUTHORIZATION="Token " + token.key)
 
-        response = self.client.put('/api/users/{}/profile/'.format(id), json.dumps(profile),
-                                   content_type='application/json')
+        profile = UserProfile.objects.create(user=self.user, first_name="nesto",
+                                             last_name="neko",
+                                             date_of_birth="2001-02-02",
+                                             place="negde", state="nigde")
+        profile.save()
+
+        data = {
+            "first_name": "Ime",
+            "last_name": "Prezime",
+            "date_of_birth": "2001-02-02",
+            "place": "mesto", "state": "drzava",
+            }
+
+        response = self.client.put(reverse('profile', args=[id]), data)
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
+    def test_unauthorized_profile(self):
+        self.client.login(e_mail="test@test.com", password="testpassword")
+        id = self.user.id
+        # token = Token.objects.get(user_id=self.user.id)
+        # self.client.credentials(HTTP_AUTHORIZATION="Token " + token.key)
+
+        profile = UserProfile.objects.create(user=self.user, first_name="nesto",
+                                             last_name="neko",
+                                             date_of_birth="2001-02-02",
+                                             place="negde", state="nigde")
+        profile.save()
+
+        data = {
+            "first_name": "Ime",
+            "last_name": "Prezime",
+            "date_of_birth": "2001-02-02",
+            "place": "mesto", "state": "drzava",
+            }
+
+        response = self.client.put(reverse('profile', args=[id]), data)
+
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_bad_request_profile(self):
+        self.client.login(e_mail="test@test.com", password="testpassword")
+        id = self.user.id
+        token = Token.objects.get(user_id=self.user.id)
+        self.client.credentials(HTTP_AUTHORIZATION="Token " + token.key)
+        profile = UserProfile.objects.create(user=self.user, first_name="nesto",
+                                             last_name="neko",
+                                             date_of_birth="2001-02-02",
+                                             place="negde", state="nigde")
+        profile.save()
+
+        data = {
+            "first_name": "Ime",
+            "last_name": "Prezime",
+            "date_of_birth": "02-01-2002",
+            "place": "mesto", "state": "drzava",
+            }
+
+        response = self.client.put(reverse('profile', args=[id]), data)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    # def test_not_found_profile(self):
+    #     # self.client.login(e_mail="test@test.com", password="testpassword")
+    #     # id = self.user.id
+    #     # token = Token.objects.get(user_id=self.user.id)
+    #     # self.client.credentials(HTTP_AUTHORIZATION="Token " + token.key)
+    #     profile = UserProfile.objects.create(user=self.user, first_name="nesto",
+    #                                          last_name="neko",
+    #                                          date_of_birth="2001-02-02",
+    #                                          place="negde", state="nigde")
+    #     profile.save()
+    #
+    #     data = {
+    #         "first_name": "Ime",
+    #         "last_name": "Prezime",
+    #         "date_of_birth": 2001-02-02,
+    #         "place": "mesto", "state": "drzava",
+    #         }
+    #
+    #     response = self.client.put(reverse('profile'), data)
+    #
+    #     self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
 
 

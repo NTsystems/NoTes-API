@@ -68,7 +68,8 @@ class NoteList(APIView):
     def post(self, request, notebook_id):
         """Create note in notebook with notebook_id  """
 
-        notebook = Notebook.objects.get(id = notebook_id)
+        #notebook = Notebook.objects.get(id = notebook_id)
+        notebook = get_object_or_404(Notebook, id = notebook_id)
         serializer = NoteSerializer(data = request.data)
         if serializer.is_valid():
             serializer.save(notebook = notebook)

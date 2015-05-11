@@ -7,5 +7,5 @@ urlpatterns = [
 
     # REST API
     url(r'^api/', include('notes.apps.account.urls')),
-    # url(r'^api/notebooks/', include('notes.apps.writer.urls')),
+    url(r'^api/notebooks/', include('notes.apps.writer.urls')),
 ]

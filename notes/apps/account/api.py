@@ -10,7 +10,6 @@ from django.http import Http404
 
 class Register(APIView):
     """Create new User."""
-    queryset = User.objects.all()
     serializer_class = UserSerializer
 
 
@@ -44,7 +43,6 @@ class TokenView(APIView):
 
 class UpdateProfile(APIView):
     """Update user profile"""
-    queryset = UserProfile.objects.all()
     serializer_class = ProfileSerializer
 
     permission_classes = (IsAuthenticated,)

@@ -79,7 +79,6 @@ class UpdateTests(APITestCase):
                                              last_name="neko",
                                              date_of_birth="2001-02-02",
                                              place="negde", state="nigde")
-        profile.save()
 
         data = {
             "first_name": "Ime",
@@ -102,8 +101,6 @@ class UpdateTests(APITestCase):
                                              last_name="neko",
                                              date_of_birth="2001-02-02",
                                              place="negde", state="nigde")
-        profile.save()
-
         data = {
             "first_name": "Ime",
             "last_name": "Prezime",

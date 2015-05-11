@@ -36,10 +36,27 @@ def make_env():
         local("pip install -r ./requirements/dev.txt")
 
 
+def create_admin():
+    """Creates admin account."""
+    _manage("createsuperuser")
+
+
 def migrate():
     """Performs database migrations."""
     _manage("makemigrations")
     _manage("migrate")
+
+
+def test(app=None):
+    """Runs unit tests.
+
+    Args:
+        app (string): App to run tests for.
+    """
+    if app:
+        _manage("test {}".format(app))
+    else:
+        _manage("test")
 
 
 def run():

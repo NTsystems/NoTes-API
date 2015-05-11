@@ -9,7 +9,7 @@ PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 REPO_ROOT = os.path.dirname(PROJECT_ROOT)
 
 # application security
-# AUTH_USER_MODEL = "auth.User"
+AUTH_USER_MODEL = "account.User"
 SECRET_KEY = 'kx#h^c4%-gunm6d9ekp+kjkb$yeu6hc%oe6y19)r&w8z1)qatj'
 ALLOWED_HOSTS = ["127.0.0.1", "0.0.0.0"]
 
@@ -27,8 +27,10 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'notes.apps.account',
     'notes.apps.writer',
     'rest_framework',
+    'rest_framework.authtoken',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -70,6 +72,12 @@ DATABASES = {
         'HOST': '0.0.0.0',
         'PORT': '5432'
     }
+}
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    ),
 }
 
 # default language

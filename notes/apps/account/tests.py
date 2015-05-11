@@ -47,7 +47,6 @@ class TokenTests(APITestCase):
 
     def test_create_token(self):
         user = User.objects.get(e_mail="test@test.com")
-        print Token.objects.get(user_id=user.id)
 
         response = self.client.post(reverse('login'), {'e_mail': 'test@test.com', 'password':'testpassword'})
 
@@ -55,7 +54,6 @@ class TokenTests(APITestCase):
 
     def test_bad_token(self):
         user = User.objects.get(e_mail="test@test.com")
-        print Token.objects.get(user_id=user.id)
 
         response = self.client.post(reverse('login'), {'e_mail': 'test', 'password':'testpassword'})
 
@@ -121,7 +119,6 @@ class UpdateTests(APITestCase):
                                              last_name="neko",
                                              date_of_birth="2001-02-02",
                                              place="negde", state="nigde")
-        profile.save()
 
         data = {
             "first_name": "Ime",
@@ -133,29 +130,6 @@ class UpdateTests(APITestCase):
         response = self.client.put(reverse('profile', args=[id]), data)
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-    # def test_not_found_profile(self):
-    #     # self.client.login(e_mail="test@test.com", password="testpassword")
-    #     # id = self.user.id
-    #     # token = Token.objects.get(user_id=self.user.id)
-    #     # self.client.credentials(HTTP_AUTHORIZATION="Token " + token.key)
-    #     profile = UserProfile.objects.create(user=self.user, first_name="nesto",
-    #                                          last_name="neko",
-    #                                          date_of_birth="2001-02-02",
-    #                                          place="negde", state="nigde")
-    #     profile.save()
-    #
-    #     data = {
-    #         "first_name": "Ime",
-    #         "last_name": "Prezime",
-    #         "date_of_birth": 2001-02-02,
-    #         "place": "mesto", "state": "drzava",
-    #         }
-    #
-    #     response = self.client.put(reverse('profile'), data)
-    #
-    #     self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-
 
 
 

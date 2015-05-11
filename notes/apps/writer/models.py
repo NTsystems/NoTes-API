@@ -22,9 +22,9 @@ class Note(models.Model):
     """
 
     title = models.CharField(max_length=30)
-    contents = models.TextField(blank = True)
-    date_of_create = models.DateField(verbose_name='creation date', auto_now_add = True)
-    last_modified = models.DateTimeField(auto_now = True)
+    contents = models.TextField(blank=True)
+    date_of_create = models.DateField(verbose_name='creation date', auto_now_add=True)
+    last_modified = models.DateTimeField(auto_now=True)
     notebook = models.ForeignKey(Notebook)
 
     def __str__(self):

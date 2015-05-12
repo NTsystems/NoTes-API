@@ -69,7 +69,7 @@ class NotebookTests(APITestCase):
         response = self.client.delete(reverse('notebook_detail', args=[1]),
                                       content_type='application/json')
 
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
 
 class NoteTests(APITestCase):
@@ -127,7 +127,7 @@ class NoteTests(APITestCase):
         """Empty notebook,no notes"""
         response = self.client.get(reverse('note_list', args=[self.notebook.id]), content_type='application/json')
         
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_get_all_notes_no_notebook(self):
         """Get notes from non-existent notebook"""
@@ -191,7 +191,7 @@ class NoteTests(APITestCase):
         response = self.client.delete(reverse('note_detail', args=[self.notebook.id, '1']),
                                       content_type='application/json')
 
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
 
 

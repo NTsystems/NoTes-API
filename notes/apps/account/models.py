@@ -50,15 +50,16 @@ class User(AbstractBaseUser, PermissionsMixin):
     def get_short_name(self):
         return self.e_mail
 
+
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_auth_token(sender, instance=None, created=False, **kwargs):
-  if created:
-      Token.objects.create(user=instance)
+    if created:
+        Token.objects.create(user=instance)
 
 
 class UserProfile(models.Model):
     # This line is required. Links UserProfile to a User model instance.
-    user = models.OneToOneField(settings.AUTH_USER_MODEL)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, related_name="profile")
     first_name = models.CharField(max_length=30, blank=True)
     last_name = models.CharField(max_length=30, blank=True)
     date_of_birth = models.DateField(blank=True, null=True)

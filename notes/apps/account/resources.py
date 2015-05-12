@@ -15,18 +15,14 @@ class Account(serializers.ModelSerializer):
         return user
 
     def update(self, instance, validated_data):
-         instance.e_mail = validated_data.get('e_mail', instance.e_mail)
+        password = validated_data.get('password', None)
+        confirm_password = validated_data.get('confirm_password', None)
 
-         instance.save()
-
-         password = validated_data.get('password', None)
-         confirm_password = validated_data.get('confirm_password', None)
-
-         if password and confirm_password and password == confirm_password:
+        if password and confirm_password and password == confirm_password:
             instance.set_password(password)
-            instance.save()
+            instance.save(update_fields=['password'])
 
-         return instance
+        return instance
 
     class Meta:
         model = User

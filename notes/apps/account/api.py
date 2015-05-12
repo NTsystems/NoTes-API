@@ -41,7 +41,6 @@ class TokenView(APIView):
             HTTP_400_BAD_REQUEST or
             HTTP_201_CREATED if token is created
         """
-        Account(data=request.data)
         e_mail = request.data.get('e_mail')
         password = request.data.get('password')
         user = authenticate(username=e_mail, password=password)
@@ -51,7 +50,6 @@ class TokenView(APIView):
             return Response(token.key, status=status.HTTP_201_CREATED)
 
         return Response(status=status.HTTP_400_BAD_REQUEST)
-
 
 
 class UpdateProfile(APIView):
@@ -72,10 +70,7 @@ class UpdateProfile(APIView):
             HTTP_204_NO_CONTENT if user profile is update
         """
         if request.user.is_authenticated():
-            profile = None
-            if hasattr(request.user, 'userprofile'):
-                profile = request.user.userprofile
-            serializer = Profile(profile, data=request.data, context={'request': request})
+            serializer = Profile(request.user.profile, data=request.data, context={'request': request})
 
             if serializer.is_valid():
                 serializer.save(user=request.user)

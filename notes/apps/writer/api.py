@@ -1,4 +1,4 @@
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, get_list_or_404
 from django.contrib.auth import get_user_model
 from rest_framework import status
 from rest_framework.views import APIView
@@ -22,9 +22,7 @@ class NotebookList(APIView):
             HTTP_200_OK if there are notebooks or
             HTT_404_NOT_FOUND if user don't have notebooks
         """
-        notebooks = Notebook.objects.all()
-        if not notebooks:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+        notebooks = get_list_or_404(Notebook)
         serializer = Notebooks(notebooks, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -68,11 +66,9 @@ class NotebookDetail(APIView):
             request (str): The first parameter
             notebook_id (int): The second parameter.
         Returns:
-            HTTP_204_OK_NO_CONTENT if notebook is deleted
-            HTTP_404_NOT_FOUND if there isn't notebook with notebook_id
+            HTTP_204_NO_CONTENT if notebook is deleted
         """
-        notebook = get_object_or_404(Notebook, id=notebook_id)
-        notebook.delete()
+        Notebook.objects.filter(id=notebook_id).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
@@ -89,8 +85,7 @@ class NoteList(APIView):
             HTTP_200_OK if there is notebook with notebook_id
             HTTP_404_NOT_FOUND if there isn't notebook with notebook_id
         """
-        get_object_or_404(Notebook, id=notebook_id)
-        notes = Note.objects.all().filter(notebook_id=notebook_id)
+        notes = get_list_or_404(Note, notebook__id=notebook_id)
         serializer = Notes(notes, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -116,23 +111,23 @@ class NoteList(APIView):
 
 class NoteDetail(APIView):
     """Update note or delete note from notebook_id"""
-    def get(self, request, notebook_id, id):
+    def get(self, request, notebook_id, note_id):
         """Read note with note_id
 
         Args:
             request (str): The first parameter
             notebook_id (int): The second parameter.
-            id (int): The third parameter.Note id.
+            note_id (int): The third parameter.Note id.
         Returns:
             HTTP_200_OK if there is note with id in notebook with notebook_id or
             HTTP_404_NOT_FOUND if there isn't notebook with notebook_id
             or there isn't note with id
         """
-        note = get_object_or_404(Note, id=id, notebook__id=notebook_id)
+        note = get_object_or_404(Note, id=note_id, notebook__id=notebook_id)
         serializer = Notes(note)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    def put(self, request, notebook_id, id):
+    def put(self, request, notebook_id, note_id):
         """Update note
 
         Args:
@@ -145,19 +140,19 @@ class NoteDetail(APIView):
             HTTP_404_NOT_FOUND if there isn't notebook with notebook_id
             or there isn't note with id
         """
-        note = get_object_or_404(Note, id=id, notebook__id=notebook_id)
+        note = get_object_or_404(Note, id=note_id, notebook__id=notebook_id)
         serializer = Notes(note, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
+            return Response(status=status.HTTP_204_NO_CONTENT)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request, id, notebook_id):
+    def delete(self, request, notebook_id, note_id):
         """Delete note
 
         Args:
-            request (str): The first parameter
+            request (str): The first paramneter
             notebook_id (int): The second parameter.
             id (int): The third parameter.Note id.
         Returns:
@@ -166,9 +161,8 @@ class NoteDetail(APIView):
             HTTP_404_NOT_FOUND if there isn't notebook with notebook_id
             or there isn't note with id
         """
-        note = get_object_or_404(Note, id=id, notebook__id=notebook_id)
-        note.delete()
-        return  Response(status=status.HTTP_204_NO_CONTENT)
+        Note.objects.filter(id=note_id, notebook__id=notebook_id).delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 

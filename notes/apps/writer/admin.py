@@ -10,7 +10,3 @@ class NoteAdmin(admin.ModelAdmin):
 admin.site.register(Notebook)
 admin.site.register(Note, NoteAdmin)
 
-
-
-
-# Register your models here.

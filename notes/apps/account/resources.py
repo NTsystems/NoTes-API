@@ -2,10 +2,9 @@ from rest_framework import serializers
 from notes.apps.account.models import User, UserProfile
 
 
-class UserSerializer(serializers.ModelSerializer):
+class Account(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=False)
     confirm_password = serializers.CharField(write_only=True, required=False)
-
 
     def create(self, validated_data):
         user = User(
@@ -29,31 +28,12 @@ class UserSerializer(serializers.ModelSerializer):
 
          return instance
 
-
     class Meta:
         model = User
         fields = ('id', 'e_mail', 'password', 'confirm_password')
 
 
-class ProfileSerializer(serializers.ModelSerializer):
-
-
-
-    # def create(self, validated_data):
-    #
-    #     profile = UserProfile(user=self.context['request'].user, **validated_data)
-    #     profile.save()
-    #     return profile
-    #
-    # def update(self, instance, validated_data):
-    #     instance.first_name = validated_data.get('first_name', instance.first_name)
-    #     instance.last_name = validated_data.get('last_name', instance.last_name)
-    #     instance.date_of_birth = validated_data.get('date_of_birth', instance.date_of_birth)
-    #     instance.place = validated_data.get('place', instance.place)
-    #     instance.state = validated_data.get('state', instance.state)
-    #
-    #     instance.save()
-    #     return instance
+class Profile(serializers.ModelSerializer):
 
     class Meta:
         model = UserProfile

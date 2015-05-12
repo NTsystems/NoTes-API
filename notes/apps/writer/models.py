@@ -2,12 +2,7 @@ from django.db import models
 from django.conf import settings
 
 
-
 class Notebook(models.Model):
-    """
-
-    """
-
     name = models.CharField(max_length=30, unique=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
 
@@ -17,10 +12,7 @@ class Notebook(models.Model):
 
 
 class Note(models.Model):
-    """This class shows how the note appears
-
-    """
-
+    """This class shows how the note appears"""
     title = models.CharField(max_length=30)
     contents = models.TextField(blank=True)
     date_of_create = models.DateField(verbose_name='creation date', auto_now_add=True)
@@ -30,4 +22,3 @@ class Note(models.Model):
     def __str__(self):
         """Return the title of note"""
         return self.title
-# Create your models here.

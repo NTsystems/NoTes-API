@@ -1,18 +1,19 @@
+import json
+
 from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
-import json
+from rest_framework.authtoken.models import Token
 from rest_framework.test import APITestCase, APIClient
 from rest_framework import status
-from rest_framework.authtoken.models import Token
+
 from notes.apps.writer.models import Note, Notebook
 
-
-User = get_user_model()
 
 class NotebookTests(APITestCase):
 
     def setUp(self):
-        user = User.objects.create_user(e_mail='example@mail', password='top_secret')
+        user = get_user_model().objects.create_user(e_mail='nesto@mail', password='top_secret')
+        user.save()
         self.client = APIClient()
         token = Token.objects.get(user_id=user.id)
         self.client.credentials(HTTP_AUTHORIZATION="Token " + token.key)
@@ -32,7 +33,7 @@ class NotebookTests(APITestCase):
         """Bad request for creating notebook"""
 
         data = {
-            'name':'',
+            'name':''
         }
 
         response = self.client.post(reverse('notebook_list'),
@@ -42,7 +43,6 @@ class NotebookTests(APITestCase):
 
     def test_get_notebooks(self):
         """Read all notebooks"""
-
         Notebook.objects.create(name='sveska', user_id='1')
         Notebook.objects.create(name='sveska1', user_id='1')
 
@@ -52,14 +52,12 @@ class NotebookTests(APITestCase):
 
     def test_no_notebooks(self):
         """There isn't any notebook"""
-
         response = self.client.get(reverse('notebook_list'), content_type='application/json')
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_delete_notebook(self):
         """Delete notebook with notebook_id"""
-
         notebook = Notebook.objects.create(name='nesto', user_id='1')
 
         response = self.client.delete(reverse('notebook_detail', args=[notebook.id]),
@@ -69,7 +67,6 @@ class NotebookTests(APITestCase):
 
     def test_delete_no_notebook(self):
         """Delete non-existent notebook"""
-
         response = self.client.delete(reverse('notebook_detail', args=[1]),
                                       content_type='application/json')
 
@@ -79,7 +76,7 @@ class NotebookTests(APITestCase):
 class NoteTests(APITestCase):
 
     def setUp(self):
-        self.user = User.objects.create_user(e_mail='nesto@gmail', password='top_secret')
+        self.user = get_user_model().objects.create_user(e_mail='nesto@gmail', password='top_secret')
         self.notebook = Notebook.objects.create(name='dummy', user=self.user)
         self.client = APIClient()
 
@@ -109,7 +106,6 @@ class NoteTests(APITestCase):
 
     def test_create_no_notebook_note(self):
         """Creating note in a non-existent notebook"""
-
         data = {
             'title':'ASDAS',
             'contents':'afaf',
@@ -119,7 +115,6 @@ class NoteTests(APITestCase):
                                     json.dumps(data), content_type='application/json')
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-
 
     def test_get_all_notes(self):
         """Get all notes from notebook with notebook_id"""
@@ -137,7 +132,6 @@ class NoteTests(APITestCase):
 
     def test_get_all_notes_no_notebook(self):
         """Get notes from non-existent notebook"""
-
         Note.objects.create(title='beleska', contents='adasdasd', notebook_id='28')
 
         response = self.client.get(reverse('note_list', args=[1]), content_type='application/json')

@@ -1,6 +1,7 @@
-from notes.apps.writer import api
 from django.conf.urls import url
 from rest_framework.urlpatterns import format_suffix_patterns
+from notes.apps.writer import api
+
 
 urlpatterns = [
 

@@ -1,16 +1,13 @@
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
-
 from django.utils import timezone
-from rest_framework.authtoken.models import Token
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from rest_framework.authtoken.models import Token
 
 
 class UserManager(BaseUserManager):
-
-
     def _create_user(self, e_mail, password, is_staff, is_superuser, **extra_fields):
         """Creates and saves a User with the given email and password."""
         now = timezone.now()
@@ -54,9 +51,6 @@ def create_auth_token(sender, instance=None, created=False, **kwargs):
   if created:
       Token.objects.create(user=instance)
 
-    # class Meta:
-    #     permission = ('change_password',)cd.
-
 
 class UserProfile(models.Model):
     # This line is required. Links UserProfile to a User model instance.
@@ -66,9 +60,6 @@ class UserProfile(models.Model):
     date_of_birth = models.DateField(blank=True, null=True)
     place = models.CharField(max_length=50, blank=True)
     state = models.CharField(verbose_name='country', max_length=50, blank=True)
-
-    # class Meta:
-    #     permission = ('change_date_of_birth', 'change_place', 'change_state',)
 
     def get_full_name(self):
         full_name = '%s %s' % (self.first_name, self.last_name)

@@ -1,17 +1,15 @@
+from django.contrib.auth import authenticate
 from rest_framework import status, authentication
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from notes.apps.account.models import User, UserProfile
-from notes.apps.account.resources import UserSerializer, ProfileSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authtoken.models import Token
-from django.contrib.auth import authenticate
-from django.http import Http404
+from notes.apps.account.resources import Account, Profile
+
 
 class Register(APIView):
     """Create new User."""
-    serializer_class = UserSerializer
-
+    serializer_class = Account
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
@@ -25,10 +23,9 @@ class Register(APIView):
 
 
 class TokenView(APIView):
-
-
+    """Create tokens."""
     def post(self, request):
-        serializer = UserSerializer(data=request.data)
+        Account(data=request.data)
         e_mail = request.data.get('e_mail')
         password = request.data.get('password')
         user = authenticate(username=e_mail, password=password)
@@ -43,12 +40,12 @@ class TokenView(APIView):
 
 class UpdateProfile(APIView):
     """Update user profile"""
-    serializer_class = ProfileSerializer
+    serializer_class = Profile
 
     permission_classes = (IsAuthenticated,)
     authentication_classes = (authentication.TokenAuthentication,)
 
-    def put(self, request, id, format=None):
+    def put(self, request):
         if request.user.is_authenticated():
             profile = None
             if hasattr(request.user, 'userprofile'):

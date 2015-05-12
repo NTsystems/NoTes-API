@@ -1,17 +1,31 @@
 from django.contrib.auth import authenticate
+
 from rest_framework import status, authentication
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authtoken.models import Token
+
 from notes.apps.account.resources import Account, Profile
 
 
 class Register(APIView):
-    """Create new User."""
+    """Create new User
+
+    Args:
+        msg(str): Human readable string describing the APIView
+    """
     serializer_class = Account
 
     def post(self, request):
+        """ Create user
+
+        Args:
+            request (str): The first parameter
+        Returns:
+            HTTP_400_BAD_REQUEST or
+            HTTP_201_CREATED if user is created
+        """
         serializer = self.serializer_class(data=request.data)
 
         if serializer.is_valid():
@@ -23,8 +37,16 @@ class Register(APIView):
 
 
 class TokenView(APIView):
-    """Create tokens."""
+    """Create tokens"""
     def post(self, request):
+        """ Create token
+
+        Args:
+            request (str): The first parameter
+        Returns:
+            HTTP_400_BAD_REQUEST or
+            HTTP_201_CREATED if token is created
+        """
         Account(data=request.data)
         e_mail = request.data.get('e_mail')
         password = request.data.get('password')
@@ -46,6 +68,16 @@ class UpdateProfile(APIView):
     authentication_classes = (authentication.TokenAuthentication,)
 
     def put(self, request, id):
+        """ Create or update user profile
+
+        Args:
+            request (str): The first parameter
+            id (int): The second parameter.User id.
+        Returns:
+            HTTP_400_BAD_REQUEST or
+            HTTP_401_UNAUTHORIZED or
+            HTTP_204_NO_CONTENT if user profile is update
+        """
         if request.user.is_authenticated():
             profile = None
             if hasattr(request.user, 'userprofile'):

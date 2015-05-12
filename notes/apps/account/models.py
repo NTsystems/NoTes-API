@@ -4,6 +4,7 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Permis
 from django.utils import timezone
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+
 from rest_framework.authtoken.models import Token
 
 
@@ -15,8 +16,11 @@ class UserManager(BaseUserManager):
             raise ValueError('Users must have an email address')
         e_mail = self.normalize_email(e_mail)
         user = self.model(e_mail=e_mail,
-                          is_staff=is_staff, is_active=True,
-                          is_superuser=is_superuser, last_login=now, **extra_fields)
+                          is_staff=is_staff,
+                          is_active=True,
+                          is_superuser=is_superuser,
+                          last_login=now,
+                          **extra_fields)
 
         user.set_password(password)
         user.save()

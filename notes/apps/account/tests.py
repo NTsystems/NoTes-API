@@ -1,8 +1,10 @@
-from django.core.urlresolvers import reverse
 import json
+
+from django.core.urlresolvers import reverse
 from rest_framework.test import APITestCase, APIClient
 from rest_framework import status
 from rest_framework.authtoken.models import Token
+
 from notes.apps.account.models import User, UserProfile
 
 
@@ -43,14 +45,14 @@ class UserTests(APITestCase):
 
 class TokenTests(APITestCase):
     def setUp(self):
-        user = User.objects.create_user(e_mail="test@test.com", password="testpassword")
+        User.objects.create_user(e_mail="test@test.com", password="testpassword")
         self.client = APIClient()
 
     def test_create_token(self):
         User.objects.get(e_mail="test@test.com")
 
         response = self.client.post(reverse('login'),
-                                    {'e_mail': 'test@test.com', 'password':'testpassword'})
+                                    {'e_mail': 'test@test.com', 'password': 'testpassword'})
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
@@ -58,7 +60,7 @@ class TokenTests(APITestCase):
         User.objects.get(e_mail="test@test.com")
 
         response = self.client.post(reverse('login'),
-                                    {'e_mail': 'test', 'password':'testpassword'})
+                                    {'e_mail': 'test', 'password': 'testpassword'})
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
@@ -70,63 +72,71 @@ class UpdateTests(APITestCase):
 
     def test_update_profile(self):
         self.client.login(e_mail="test@test.com", password="testpassword")
-        id = self.user.id
-        token = Token.objects.get(user_id=self.user.id)
+        token = Token.objects.get(user=self.user.id)
         self.client.credentials(HTTP_AUTHORIZATION="Token " + token.key)
 
-        UserProfile.objects.create(user=self.user, first_name="nesto",
-                                             last_name="neko",
-                                             date_of_birth="2001-02-02",
-                                             place="negde", state="nigde")
+        UserProfile.objects.create(user=self.user,
+                                   first_name="nesto",
+                                   last_name="neko",
+                                   date_of_birth="2001-02-02",
+                                   place="negde",
+                                   state="nigde")
 
         data = {
             "first_name": "Ime",
             "last_name": "Prezime",
             "date_of_birth": "2001-02-02",
-            "place": "mesto", "state": "drzava",
-            }
+            "place": "mesto",
+            "state": "drzava",
+        }
 
-        response = self.client.put(reverse('profile', args=[id]), data)
+        response = self.client.put(reverse('profile', args=[self.user.id]), json.dumps(data),
+                                   content_type='application/json')
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
     def test_unauthorized_profile(self):
         self.client.login(e_mail="test@test.com", password="testpassword")
-        id = self.user.id
 
-        UserProfile.objects.create(user=self.user, first_name="nesto",
-                                             last_name="neko",
-                                             date_of_birth="2001-02-02",
-                                             place="negde", state="nigde")
+        UserProfile.objects.create(user=self.user,
+                                   first_name="nesto",
+                                   last_name="neko",
+                                   date_of_birth="2001-02-02",
+                                   place="negde",
+                                   state="nigde")
         data = {
             "first_name": "Ime",
             "last_name": "Prezime",
             "date_of_birth": "2001-02-02",
-            "place": "mesto", "state": "drzava",
-            }
+            "place": "mesto",
+            "state": "drzava",
+        }
 
-        response = self.client.put(reverse('profile', args=[id]), data)
+        response = self.client.put(reverse('profile', args=[self.user.id]), json.dumps(data),
+                                   content_type='application/json')
 
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_bad_request_profile(self):
         self.client.login(e_mail="test@test.com", password="testpassword")
-        id = self.user.id
-        token = Token.objects.get(user_id=self.user.id)
+        token = Token.objects.get(user=self.user.id)
         self.client.credentials(HTTP_AUTHORIZATION="Token " + token.key)
-        UserProfile.objects.create(user=self.user, first_name="nesto",
-                                             last_name="neko",
-                                             date_of_birth="2001-02-02",
-                                             place="negde", state="nigde")
+        UserProfile.objects.create(user=self.user,
+                                   first_name="nesto",
+                                   last_name="neko",
+                                   date_of_birth="2001-02-02",
+                                   place="negde", state="nigde")
 
         data = {
             "first_name": "Ime",
             "last_name": "Prezime",
             "date_of_birth": "02-01-2002",
-            "place": "mesto", "state": "drzava",
-            }
+            "place": "mesto",
+            "state": "drzava",
+        }
 
-        response = self.client.put(reverse('profile', args=[id]), data)
+        response = self.client.put(reverse('profile', args=[self.user.id]), json.dumps(data),
+                                   content_type='application/json')
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 

@@ -12,8 +12,7 @@ from notes.apps.writer.models import Note, Notebook
 class NotebookTests(APITestCase):
 
     def setUp(self):
-        user = get_user_model().objects.create_user(e_mail='nesto@mail', password='top_secret')
-        user.save()
+        user = get_user_model().objects.create_user(e_mail='example@gmail.com', password='top_secret')
         self.client = APIClient()
         token = Token.objects.get(user_id=user.id)
         self.client.credentials(HTTP_AUTHORIZATION="Token " + token.key)
@@ -22,7 +21,7 @@ class NotebookTests(APITestCase):
         """Create notebook"""
 
         data = {
-            'name':'Sveska',
+            'name': 'Sveska',
         }
 
         response = self.client.post(reverse('notebook_list'), json.dumps(data), content_type='application/json')
@@ -33,7 +32,7 @@ class NotebookTests(APITestCase):
         """Bad request for creating notebook"""
 
         data = {
-            'name':''
+            'name': ''
         }
 
         response = self.client.post(reverse('notebook_list'),
@@ -58,7 +57,7 @@ class NotebookTests(APITestCase):
 
     def test_delete_notebook(self):
         """Delete notebook with notebook_id"""
-        notebook = Notebook.objects.create(name='nesto', user_id='1')
+        notebook = Notebook.objects.create(name='sveska', user_id='1')
 
         response = self.client.delete(reverse('notebook_detail', args=[notebook.id]),
                                       content_type='application/json')
@@ -76,15 +75,15 @@ class NotebookTests(APITestCase):
 class NoteTests(APITestCase):
 
     def setUp(self):
-        self.user = get_user_model().objects.create_user(e_mail='nesto@gmail', password='top_secret')
+        self.user = get_user_model().objects.create_user(e_mail='example@gmail.com', password='top_secret')
         self.notebook = Notebook.objects.create(name='dummy', user=self.user)
         self.client = APIClient()
 
     def test_create_note(self):
         """Create note in notebook with notebook_id"""
         data = {
-            'title':'ASDAS',
-            'contents':'afaf',
+            'title': 'ASDAS',
+            'contents': 'afaf',
         }
 
         response = self.client.post(reverse('note_list', args=[self.notebook.id]),
@@ -95,8 +94,8 @@ class NoteTests(APITestCase):
     def test_create_note_bad_request(self):
         """Bad request for creating note"""
         data = {
-            'title':'',
-            'contents':'addfs',
+            'title': '',
+            'contents': 'addfs',
         }
 
         response = self.client.post(reverse('note_list', args=[self.notebook.id]),
@@ -107,8 +106,8 @@ class NoteTests(APITestCase):
     def test_create_no_notebook_note(self):
         """Creating note in a non-existent notebook"""
         data = {
-            'title':'ASDAS',
-            'contents':'afaf',
+            'title': 'naslov',
+            'contents': 'afaf',
         }
 
         response = self.client.post(reverse('note_list', args=[1]),
@@ -143,8 +142,8 @@ class NoteTests(APITestCase):
         note = Note.objects.create(title='beleska', contents='adasdasd', notebook=self.notebook)
 
         data = {
-            'title':'ASDAS',
-            'contents':'afaf',
+            'title': 'naslov',
+            'contents': 'afaf',
         }
 
         response = self.client.put(reverse('note_detail', args=[self.notebook.id, note.id]),
@@ -157,8 +156,8 @@ class NoteTests(APITestCase):
         note = Note.objects.create(title='beleska', contents='adasdasd', notebook=self.notebook)
 
         data = {
-            'title':'',
-            'contents':'afaf',
+            'title': '',
+            'contents': 'afaf',
         }
 
         response = self.client.put(reverse('note_detail', args=[self.notebook.id, note.id]),
@@ -169,8 +168,8 @@ class NoteTests(APITestCase):
     def test_update_no_note(self):
         """Update non-existent note"""
         data = {
-            'title':'ASDAS',
-            'contents':'afaf',
+            'title': 'naslov',
+            'contents': 'afaf',
         }
 
         response = self.client.put(reverse('note_detail', args=[self.notebook.id, '1']),

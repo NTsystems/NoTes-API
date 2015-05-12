@@ -10,13 +10,7 @@ from notes.apps.account.resources import Account, Profile
 
 
 class Register(APIView):
-    """Create new User
-
-    Args:
-        msg(str): Human readable string describing the APIView
-    """
-    serializer_class = Account
-
+    """Create new User"""
     def post(self, request):
         """ Create user
 
@@ -26,7 +20,7 @@ class Register(APIView):
             HTTP_400_BAD_REQUEST or
             HTTP_201_CREATED if user is created
         """
-        serializer = self.serializer_class(data=request.data)
+        serializer = Account(data=request.data)
 
         if serializer.is_valid():
             serializer.save()
@@ -62,7 +56,6 @@ class TokenView(APIView):
 
 class UpdateProfile(APIView):
     """Update user profile"""
-    serializer_class = Profile
 
     permission_classes = (IsAuthenticated,)
     authentication_classes = (authentication.TokenAuthentication,)
@@ -82,7 +75,7 @@ class UpdateProfile(APIView):
             profile = None
             if hasattr(request.user, 'userprofile'):
                 profile = request.user.userprofile
-            serializer = self.serializer_class(profile, data=request.data, context={'request': request})
+            serializer = Profile(profile, data=request.data, context={'request': request})
 
             if serializer.is_valid():
                 serializer.save(user=request.user)

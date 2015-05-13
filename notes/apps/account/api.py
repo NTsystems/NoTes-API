@@ -69,16 +69,13 @@ class UpdateProfile(APIView):
             HTTP_401_UNAUTHORIZED or
             HTTP_204_NO_CONTENT if user profile is update
         """
-        if request.user.is_authenticated():
-            serializer = Profile(request.user.profile, data=request.data, context={'request': request})
+        serializer = Profile(request.user.profile, data=request.data, context={'request': request})
 
-            if serializer.is_valid():
-                serializer.save(user=request.user)
-                return Response(serializer.validated_data, status=status.HTTP_204_NO_CONTENT)
+        if serializer.is_valid():
+            serializer.save(user=request.user)
+            return Response(serializer.validated_data, status=status.HTTP_204_NO_CONTENT)
 
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-        return Response(status=status.HTTP_401_UNAUTHORIZED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 

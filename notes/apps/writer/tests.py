@@ -78,6 +78,8 @@ class NoteTests(APITestCase):
         self.user = get_user_model().objects.create_user(e_mail='example@gmail.com', password='top_secret')
         self.notebook = Notebook.objects.create(name='dummy', user=self.user)
         self.client = APIClient()
+        token = Token.objects.get(user_id=self.user.id)
+        self.client.credentials(HTTP_AUTHORIZATION="Token " + token.key)
 
     def test_create_note(self):
         """Create note in notebook with notebook_id"""

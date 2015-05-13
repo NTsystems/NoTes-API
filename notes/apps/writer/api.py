@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404, get_list_or_404
-from django.contrib.auth import get_user_model
-from rest_framework import status
+from rest_framework import authentication, status
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from notes.apps.writer.models import Note, Notebook
@@ -13,6 +13,9 @@ class NotebookList(APIView):
     Args:
         msg(str): Human readable string describing the APIView
     """
+    permission_classes = (IsAuthenticated,)
+    authentication_classes = (authentication.TokenAuthentication,)
+
     def get(self, request):
         """List all notebooks
 
@@ -44,6 +47,8 @@ class NotebookList(APIView):
 
 class NotebookDetail(APIView):
     """Read notebook and delete notebook with notebook_id """
+    permission_classes = (IsAuthenticated,)
+    authentication_classes = (authentication.TokenAuthentication,)
 
     def get(self, request, notebook_id):
         """Retrieve notebook with notebook_id
@@ -55,7 +60,7 @@ class NotebookDetail(APIView):
             HTTP_200_OK if there is a notebook with notebook_id or
             HTTP_404_NOT_FOUND if there isn't notebook with notebook_id
         """
-        notebook = get_object_or_404(Notebook, id=notebook_id)
+        notebook = get_object_or_404(Notebook, id=notebook_id, user=request.user)
         serializer = Notebooks(notebook)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -74,6 +79,8 @@ class NotebookDetail(APIView):
 
 class NoteList(APIView):
     """List all notes from notebook with notebook_id or create new note"""
+    permission_classes = (IsAuthenticated,)
+    authentication_classes = (authentication.TokenAuthentication,)
 
     def get(self, request, notebook_id):
         """List all notes from notebook with notebook_id
@@ -111,6 +118,9 @@ class NoteList(APIView):
 
 class NoteDetail(APIView):
     """Update note or delete note from notebook_id"""
+    permission_classes = (IsAuthenticated,)
+    authentication_classes = (authentication.TokenAuthentication,)
+
     def get(self, request, notebook_id, note_id):
         """Read note with note_id
 
@@ -152,7 +162,7 @@ class NoteDetail(APIView):
         """Delete note
 
         Args:
-            request (str): The first paramneter
+            request (str): The first parameter
             notebook_id (int): The second parameter.
             id (int): The third parameter.Note id.
         Returns:

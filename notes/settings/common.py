@@ -1,8 +1,5 @@
-"""Contains notes project settings."""
+"""Contains common project settings."""
 import os
-
-# Development mode?
-DEBUG = os.environ.get("DEBUG", True)
 
 # local project paths
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -44,20 +41,6 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.security.SecurityMiddleware',
 )
 
-#
-# storage
-#
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'postgres',
-        'USER': 'ntsystems',
-        'PASSWORD': 'ntsystems',
-        'HOST': '0.0.0.0',
-        'PORT': '5432'
-    }
-}
-
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
@@ -77,5 +60,3 @@ TIME_ZONE = 'UTC'
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
-
-# logging (TBD)

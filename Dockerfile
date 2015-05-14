@@ -9,7 +9,7 @@ MAINTAINER Dejan Mijic <dejan.mjc@gmail.com>
 CMD ["/sbin/my_init"]
 
 # Environment variables
-ENV NOTES_HOME /opt/api
+ENV NOTES_HOME /opt/nt-notes
 
 # Update package repositories
 RUN apt-get update && apt-get upgrade -y
@@ -18,21 +18,32 @@ RUN apt-get update && apt-get upgrade -y
 RUN apt-get install -y python-dev python-pip libpq-dev nginx
 RUN pip install fabric uwsgi
 
+# uWSGI
+ADD ./config/uwsgi.ini /opt/nt-notes/config/uwsgi.ini
+ADD ./config/uwsgi.params /opt/nt-notes/config/uwsgi.params
+
+# nginx
+RUN rm -f /etc/nginx/sites-enabled/default
+ADD ./config/nginx.conf /etc/nginx/sites-enabled/notes.conf
+
+# Add runits
+RUN mkdir /etc/service/{nginx,notes}
+ADD ./config/nginx.sh /etc/service/nginx/run
+RUN chmod +x /etc/service/nginx/run
+ADD ./config/notes.sh /etc/service/notes/run
+RUN chmod +x /etc/service/notes/run
+
 # Copy the app sources
-RUN mkdir -p /opt/api
-ADD ./notes /opt/api/notes/
-ADD ./fabfile.py /opt/api/fabfile.py
-ADD ./requirements /opt/api/requirements/
-ADD ./requirements.txt /opt/api/requirements.txt
+RUN mkdir -p /opt/nt-notes
+ADD ./notes /opt/nt-notes/notes/
+ADD ./fabfile.py /opt/nt-notes/fabfile.py
+ADD ./requirements /opt/nt-notes/requirements/
+ADD ./requirements.txt /opt/nt-notes/requirements.txt
 
 # Initialize app
-WORKDIR /opt/api
+WORKDIR /opt/nt-notes
 RUN pip install -r requirements.txt
-
-# Database setup
-
-# Server setup
-RUN rm -f /etc/nginx/sites-enabled/default
+RUN fab migrate
 
 # Expose ports
 EXPOSE 80

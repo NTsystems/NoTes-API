@@ -2,10 +2,10 @@
 import os
 
 #
-# PRODUCTION variable will be set once the application
+# NOTES_HOME variable will be set once the application
 # is dockerized.
 #
-if os.getenv("PRODUCTION", False):
+if os.getenv("NOTES_HOME", False):
     from notes.settings.prod import *
 else:
     from notes.settings.dev import *

@@ -8,7 +8,7 @@ REPO_ROOT = os.path.dirname(PROJECT_ROOT)
 # application security
 AUTH_USER_MODEL = "account.User"
 SECRET_KEY = 'kx#h^c4%-gunm6d9ekp+kjkb$yeu6hc%oe6y19)r&w8z1)qatj'
-ALLOWED_HOSTS = ["127.0.0.1", "0.0.0.0"]
+ALLOWED_HOSTS = ["*"]
 
 # application definition
 ROOT_URLCONF = 'notes.urls'

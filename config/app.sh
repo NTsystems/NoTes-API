@@ -1,4 +1,4 @@
 #!/bin/sh
 
 # run uWSGI
-/usr/local/bin/uwsgi --ini /opt/api/config/uwsgi.ini
+/usr/local/bin/uwsgi --ini /opt/nt-notes/config/uwsgi.ini

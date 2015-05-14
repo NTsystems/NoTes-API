@@ -12,7 +12,13 @@ CMD ["/sbin/my_init"]
 ENV NOTES_HOME /opt/nt-notes
 
 # Install dependencies
-RUN apt-get update && apt-get install -y python-dev python-pip libpq-dev nginx
+RUN apt-get update && apt-get install -y \
+    python-dev \
+    python-pip \
+    libpq-dev \
+    libyaml-dev \
+    nginx
+
 RUN pip install fabric uwsgi
 
 # uWSGI
@@ -41,7 +47,7 @@ ADD ./requirements.txt /opt/nt-notes/requirements.txt
 # Initialize app
 WORKDIR /opt/nt-notes
 RUN pip install -r requirements.txt
-# RUN fab migrate
+# TODO: initial migrations
 
 # Expose ports
 EXPOSE 80

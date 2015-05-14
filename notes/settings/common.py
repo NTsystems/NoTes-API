@@ -60,3 +60,4 @@ TIME_ZONE = 'UTC'
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(REPO_ROOT, 'assets')

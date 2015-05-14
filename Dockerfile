@@ -19,7 +19,7 @@ RUN apt-get update && apt-get install -y \
     libyaml-dev \
     nginx
 
-RUN pip install fabric uwsgi
+RUN pip install uwsgi
 
 # uWSGI
 ADD ./config/uwsgi.ini /opt/nt-notes/config/uwsgi.ini
@@ -34,20 +34,21 @@ RUN mkdir /etc/service/nginx
 ADD ./config/nginx.sh /etc/service/nginx/run
 RUN chmod +x /etc/service/nginx/run
 RUN mkdir /etc/service/notes
-ADD ./config/app.sh /etc/service/notes/run
+ADD ./config/uwsgi.sh /etc/service/notes/run
 RUN chmod +x /etc/service/notes/run
 
 # Copy the app sources
 RUN mkdir -p /opt/nt-notes
 ADD ./notes /opt/nt-notes/notes/
-ADD ./fabfile.py /opt/nt-notes/fabfile.py
+ADD ./manage.py /opt/nt-notes/manage.py
 ADD ./requirements /opt/nt-notes/requirements/
 ADD ./requirements.txt /opt/nt-notes/requirements.txt
 
 # Initialize app
 WORKDIR /opt/nt-notes
 RUN pip install -r requirements.txt
-# TODO: initial migrations
+RUN python manage.py collectstatic --noinput
+# RUN python manage.py migrate
 
 # Expose ports
 EXPOSE 80

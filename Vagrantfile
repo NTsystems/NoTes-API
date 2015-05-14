@@ -38,8 +38,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
             curl -L https://github.com/docker/compose/releases/download/1.1.0/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
             chmod +x /usr/local/bin/docker-compose
 
-            # start postgresql instance
-            docker run --name notes-db -p 5432:5432 -e POSTGRES_PASSWORD=ntsystems -e POSTGRES_USER=ntsystems -d postgres:9.3
+            # start containers
+            cd /vagrant
+            docker-compose up -d postgres
+            docker-compose up -d celery
         SCRIPT
     end
 end

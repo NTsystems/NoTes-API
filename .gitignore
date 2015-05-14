@@ -1,6 +1,5 @@
 # python stuff
 *.py[cod]
-env/
 
 # Testing
 .coverage

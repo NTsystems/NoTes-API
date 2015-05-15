@@ -8,4 +8,7 @@ urlpatterns = [
     # REST API
     url(r'^api/', include('notes.apps.account.urls')),
     url(r'^api/notebooks/', include('notes.apps.writer.urls')),
+
+    # swagger
+    url(r'^docs/', include('rest_framework_swagger.urls')),
 ]

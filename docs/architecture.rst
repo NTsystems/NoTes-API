@@ -1,17 +1,6 @@
 Architecture
 ============
 
-Technology stack:
-
-Git
-+++
-
-Git really changed the way developers think of merging and branching. From the classic CVS/Subversion world,
-merging/branching has always been considered a bit scary and something you only do every once in a while.
-With Git, these actions are extremely cheap and simple, and they are considered one of the core parts of
-your daily workflow.
-In our project we use git flow model branching
-
 REST API
 ++++++++
 

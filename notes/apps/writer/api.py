@@ -161,19 +161,7 @@ class NoteDetail(APIView):
     def put(self, request, notebook_id, note_id):
         """Update note.
         ---
-        parameters:
-            - name: title
-              description: Title for note
-              required: true
-              type: string
-              paramType: form
-            - name: contents
-              description: contents for note
-              required: false
-              type: string
-              paramType: form
-
-        serializer: notes.apps.writer.resources.Notes
+        request_serializer: notes.apps.writer.resources.Notes
 
         responseMessages:
             - code: 204

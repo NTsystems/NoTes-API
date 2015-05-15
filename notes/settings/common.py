@@ -49,9 +49,6 @@ REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
     ),
-    'DEFAULT_PARSER_CLASSES': (
-        'rest_framework.parsers.JSONParser',
-    )
 }
 
 SWAGGER_SETTINGS = {
@@ -64,7 +61,7 @@ SWAGGER_SETTINGS = {
         'put',
         'delete'
     ],
-    'api_key': "7eb53ef4a48f52fbd5222e812dd3a593d75a467f",
+    'api_key': "b5b7ccaf3650193c3aec866b19d49d3560f426c5",
     'is_authenticated': False,
     'is_superuser': False,
     'permission_denied_handler': None,

@@ -46,6 +46,12 @@ def test(app=None):
         _manage("test")
 
 
+# def docs():
+#     """Creates project documentation."""
+#     with _virtualenv():
+#         local("sphinx-build -b html docs/ docs/_build/")
+
+
 def run():
     """Starts development server."""
     local_ip = "0.0.0.0:8000"

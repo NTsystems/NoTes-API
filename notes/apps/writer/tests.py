@@ -196,9 +196,55 @@ class NoteTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
 
+class Authorization(APITestCase):
 
+    def setUp(self):
+        self.user = get_user_model().objects.create_user(e_mail='example@gmail.com', password='top_secret')
+        self.notebook = Notebook.objects.create(name='dummy', user=self.user)
+        self.client = APIClient()
 
+    def test_create_notebook_no_authorization(self):
+        """Creating notebook without authorization"""
+        data = {
+            'title': 'ASDAS',
+            'contents': 'afaf',
+        }
 
+        response = self.client.post(reverse('note_list', args=[self.notebook.id]),
+                                    json.dumps(data), content_type='application/json')
+
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+        token = Token.objects.get(user_id=self.user.id)
+        self.client.credentials(HTTP_AUTHORIZATION="Token " + token.key)
+
+        response = self.client.post(reverse('note_list', args=[self.notebook.id]),
+                                    json.dumps(data), content_type='application/json')
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_delete_note_no_authorization(self):
+        """Deleting note without authorization"""
+        note = Note.objects.create(title='beleska', contents='adasdasd', notebook=self.notebook)
+
+        response = self.client.delete(reverse('note_detail', args=[self.notebook.id, note.id]),
+                                      content_type='application/json')
+
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_update_note_no_authorization(self):
+        """Updating note without authorization"""
+        note = Note.objects.create(title='beleska', contents='adasdasd', notebook=self.notebook)
+
+        data = {
+            'title': 'naslov',
+            'contents': 'afaf',
+        }
+
+        response = self.client.put(reverse('note_detail', args=[self.notebook.id, note.id]),
+                                   json.dumps(data), content_type='application/json')
+
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
 
 

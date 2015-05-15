@@ -35,15 +35,38 @@ the available fabric script.
 Fabric API
 ~~~~~~~~~~
 
-TBD
+.. code-block:: bash
+
+    # invokes manage.py
+    fab _manage
+
+    # project directory cleanup
+    fab clean
+
+    # creates admin account
+    fab create_admin
+
+    # performs database migrations
+    fab migrate
+
+    # generates sphinx documentation
+    fab docs
+
+    # runs unit test
+    fab test
+
+    # starts development server
+    fab run
+
 
 Swagger
 -------
 
 Swagger_ provides a useful representation of exposed REST API. It can be
-accessed on the following address.
+accessed on the following address_.
 
 .. _Fabric: http://www.fabfile.org/
 .. _Virtualbox: https://www.virtualbox.org/
 .. _Vagrant: https://www.vagrantup.com/
 .. _Swagger: http://swagger.io/
+.. _address: http://192.168.85.5:8000/swagger/

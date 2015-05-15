@@ -35,15 +35,15 @@ the available fabric script.
 Fabric API
 ~~~~~~~~~~
 
-TBD
 
 Swagger
 -------
 
 Swagger_ provides a useful representation of exposed REST API. It can be
-accessed on the following address.
+accessed on the following address_.
 
 .. _Fabric: http://www.fabfile.org/
 .. _Virtualbox: https://www.virtualbox.org/
 .. _Vagrant: https://www.vagrantup.com/
 .. _Swagger: http://swagger.io/
+.. _address: http://192.168.85.5:8000/swagger/

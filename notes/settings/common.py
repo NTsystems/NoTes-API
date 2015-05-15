@@ -1,6 +1,7 @@
 """Contains common project settings."""
 import os
 
+
 # local project paths
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 REPO_ROOT = os.path.dirname(PROJECT_ROOT)
@@ -28,6 +29,7 @@ INSTALLED_APPS = (
     'notes.apps.writer',
     'rest_framework',
     'rest_framework.authtoken',
+    'rest_framework_swagger',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -41,16 +43,38 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.security.SecurityMiddleware',
 )
 
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
     ),
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
-    ),
-    'DEFAULT_PARSER_CLASSES': (
-        'rest_framework.parsers.JSONParser',
     )
+}
+
+SWAGGER_SETTINGS = {
+    'exclude_namespaces': [],
+    'api_version': '1.0.0',
+    'api_path': '/',
+    'enabled_methods': [
+        'get',
+        'post',
+        'put',
+        'delete'
+    ],
+    'api_key': "b5b7ccaf3650193c3aec866b19d49d3560f426c5",
+    'is_authenticated': False,
+    'is_superuser': False,
+    'permission_denied_handler': None,
+    'info': {
+        'contact': 'apiteam@wordnik.com',
+        'description': 'This is a NoTes API. ',
+        'license': 'MIT',
+        'licenseUrl': 'http://opensource.org/licenses/MIT',
+        'title': 'NoTes',
+    },
+    'doc_expansion': 'none',
 }
 
 # default language

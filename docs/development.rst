@@ -35,29 +35,6 @@ the available fabric script.
 Fabric API
 ~~~~~~~~~~
 
-.. code-block:: bash
-
-    # invokes manage.py
-    fab _manage
-
-    # project directory cleanup
-    fab clean
-
-    # creates admin account
-    fab create_admin
-
-    # performs database migrations
-    fab migrate
-
-    # generates sphinx documentation
-    fab docs
-
-    # runs unit test
-    fab test
-
-    # starts development server
-    fab run
-
 
 Swagger
 -------

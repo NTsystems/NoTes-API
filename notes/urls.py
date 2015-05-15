@@ -10,5 +10,5 @@ urlpatterns = [
     url(r'^api/notebooks/', include('notes.apps.writer.urls')),
 
     # swagger
-    url(r'^docs/', include('rest_framework_swagger.urls')),
+    url(r'^swagger/', include('rest_framework_swagger.urls')),
 ]

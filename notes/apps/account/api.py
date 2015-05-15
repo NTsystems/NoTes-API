@@ -76,7 +76,6 @@ class TokenView(APIView):
 
 
 class UpdateProfile(APIView):
-
     permission_classes = (IsAuthenticated,)
     authentication_classes = (authentication.TokenAuthentication,)
 
@@ -95,7 +94,7 @@ class UpdateProfile(APIView):
         """
         serializer = Profile(data=request.data, context={'request': request})
         if serializer.is_valid():
-            profile, _ = UserProfile.objects.update_or_create(defaults=request.data)
+            profile, _ = UserProfile.objects.update_or_create(user=request.user, defaults=request.data)
             return Response(status=status.HTTP_204_NO_CONTENT)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

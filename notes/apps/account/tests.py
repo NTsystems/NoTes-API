@@ -75,36 +75,27 @@ class UpdateTests(APITestCase):
         token = Token.objects.get(user=self.user.id)
         self.client.credentials(HTTP_AUTHORIZATION="Token " + token.key)
 
-        UserProfile.objects.create(user=self.user,
-                                   first_name="nesto",
-                                   last_name="neko",
-                                   date_of_birth="2001-02-02",
-                                   place="negde",
-                                   state="nigde")
-
-        data = {
+        profile = {
             "first_name": "Ime",
             "last_name": "Prezime",
-            "date_of_birth": "2001-02-02",
             "place": "mesto",
             "state": "drzava",
         }
 
-        response = self.client.put(reverse('profile', args=[self.user.id]), json.dumps(data),
+        response = self.client.put(reverse('profile', args=[self.user.id]), json.dumps(profile),
                                    content_type='application/json')
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        user_profile = UserProfile.objects.get(user=self.user.id)
+
+        for field, value in profile.iteritems():
+            db_value = getattr(user_profile, field)
+            self.assertEqual(db_value, value)
 
     def test_unauthorized_profile(self):
         self.client.login(e_mail="test@test.com", password="testpassword")
 
-        UserProfile.objects.create(user=self.user,
-                                   first_name="nesto",
-                                   last_name="neko",
-                                   date_of_birth="2001-02-02",
-                                   place="negde",
-                                   state="nigde")
-        data = {
+        profile = {
             "first_name": "Ime",
             "last_name": "Prezime",
             "date_of_birth": "2001-02-02",
@@ -112,7 +103,7 @@ class UpdateTests(APITestCase):
             "state": "drzava",
         }
 
-        response = self.client.put(reverse('profile', args=[self.user.id]), json.dumps(data),
+        response = self.client.put(reverse('profile', args=[self.user.id]), json.dumps(profile),
                                    content_type='application/json')
 
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
@@ -121,13 +112,8 @@ class UpdateTests(APITestCase):
         self.client.login(e_mail="test@test.com", password="testpassword")
         token = Token.objects.get(user=self.user.id)
         self.client.credentials(HTTP_AUTHORIZATION="Token " + token.key)
-        UserProfile.objects.create(user=self.user,
-                                   first_name="nesto",
-                                   last_name="neko",
-                                   date_of_birth="2001-02-02",
-                                   place="negde", state="nigde")
 
-        data = {
+        profile = {
             "first_name": "Ime",
             "last_name": "Prezime",
             "date_of_birth": "02-01-2002",
@@ -135,7 +121,7 @@ class UpdateTests(APITestCase):
             "state": "drzava",
         }
 
-        response = self.client.put(reverse('profile', args=[self.user.id]), json.dumps(data),
+        response = self.client.put(reverse('profile', args=[self.user.id]), json.dumps(profile),
                                    content_type='application/json')
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)

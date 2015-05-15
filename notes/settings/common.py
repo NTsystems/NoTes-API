@@ -28,6 +28,7 @@ INSTALLED_APPS = (
     'notes.apps.writer',
     'rest_framework',
     'rest_framework.authtoken',
+    'rest_framework_swagger',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -51,6 +52,30 @@ REST_FRAMEWORK = {
     'DEFAULT_PARSER_CLASSES': (
         'rest_framework.parsers.JSONParser',
     )
+}
+
+SWAGGER_SETTINGS = {
+    'exclude_namespaces': [],
+    'api_version': '1.0.0',
+    'api_path': '/',
+    'enabled_methods': [
+        'get',
+        'post',
+        'put',
+        'delete'
+    ],
+    'api_key': "7eb53ef4a48f52fbd5222e812dd3a593d75a467f",
+    'is_authenticated': False,
+    'is_superuser': False,
+    'permission_denied_handler': None,
+    'info': {
+        'contact': 'apiteam@wordnik.com',
+        'description': 'This is a NoTes API. ',
+        'license': 'MIT',
+        'licenseUrl': 'http://opensource.org/licenses/MIT',
+        'title': 'NoTes',
+    },
+    'doc_expansion': 'none',
 }
 
 # default language

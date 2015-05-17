@@ -26,7 +26,8 @@ def setup_accounts(apps, schema_editor):
                                   is_staff=False,
                                   is_superuser=False)
 
-    Token.objects.create(user_id=swagger.id, key="bbc7f7b5492468db6a4a54a00c1b504930371792")
+    Token.objects.create(user_id=swagger.id,
+                         key="bbc7f7b5492468db6a4a54a00c1b504930371792")
 
 
 class Migration(migrations.Migration):

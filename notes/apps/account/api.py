@@ -12,25 +12,25 @@ from notes.apps.account.models import UserProfile
 
 class Register(APIView):
     def post(self, request):
-        """ Creates new user account.
+        """Creates new user account.
         ---
         parameters:
             - name: e_mail
-              description: User's email address
+              description: User's email address.
               required: true
               type: string
               paramType: form
             - name: password
-              description: User's password
+              description: User's password.
               required: true
               type: string
               paramType: form
 
         responseMessages:
             - code: 201
-              message: Registered
+              message: Registration succeeded.
             - code: 400
-              message: Wrong entry
+              message: Invalid or missing data supplied.
         """
         serializer = Account(data=request.data)
 
@@ -44,25 +44,24 @@ class Register(APIView):
 
 class TokenView(APIView):
     def post(self, request):
-        """ Creates token for user.
+        """Creates or retrieves authentication token.
         ---
         parameters:
             - name: e_mail
-              description: User's email address
+              description: User's email address.
               required: true
               type: string
               paramType: form
             - name: password
-              description: User's password
+              description: User's password.
               required: true
               type: string
               paramType: form
 
         responseMessages:
             - code: 201
-              message: Created
             - code: 400
-              message: User is not registered
+              message: Account inactive or non-existent.
         """
         e_mail = request.data.get('e_mail')
         password = request.data.get('password')
@@ -80,17 +79,16 @@ class UpdateProfile(APIView):
     authentication_classes = (authentication.TokenAuthentication,)
 
     def put(self, request, id):
-        """ Create or update user profile.
+        """Updates user profile information.
         ---
         request_serializer: notes.apps.account.resources.Profile
 
         responseMessages:
             - code: 204
-              message: Profile is updated
             - code: 400
-              message: Bad request
+              message: Invalid or missing data supplied.
             - code: 401
-              message: Not authenticated
+              message: Unauthorized.
         """
         serializer = Profile(data=request.data, context={'request': request})
         if serializer.is_valid():

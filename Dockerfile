@@ -21,13 +21,20 @@ RUN apt-get update && apt-get install -y \
 
 RUN pip install uwsgi
 
-# uWSGI
+# Copy the required source
+RUN mkdir -p /opt/nt-notes
+ADD ./config /opt/nt-notes/config/
+ADD ./notes /opt/nt-notes/notes/
+ADD ./manage.py /opt/nt-notes/manage.py
+ADD ./requirements /opt/nt-notes/requirements/
+ADD ./requirements.txt /opt/nt-notes/requirements.txt
+
 ADD ./config/uwsgi.ini /opt/nt-notes/config/uwsgi.ini
 ADD ./config/uwsgi.params /opt/nt-notes/config/uwsgi.params
 
 # nginx
 RUN rm -f /etc/nginx/sites-enabled/default
-ADD ./config/nginx.conf /etc/nginx/sites-enabled/notes.conf
+RUN ln -s /opt/nt-notes/config/nginx.conf /etc/nginx/sites-enabled/notes.conf
 
 # Add runits
 RUN mkdir /etc/service/nginx
@@ -36,13 +43,6 @@ RUN chmod +x /etc/service/nginx/run
 RUN mkdir /etc/service/notes
 ADD ./config/uwsgi.sh /etc/service/notes/run
 RUN chmod +x /etc/service/notes/run
-
-# Copy the app sources
-RUN mkdir -p /opt/nt-notes
-ADD ./notes /opt/nt-notes/notes/
-ADD ./manage.py /opt/nt-notes/manage.py
-ADD ./requirements /opt/nt-notes/requirements/
-ADD ./requirements.txt /opt/nt-notes/requirements.txt
 
 # Initialize app
 WORKDIR /opt/nt-notes

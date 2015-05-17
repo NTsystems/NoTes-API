@@ -24,11 +24,12 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'notes.apps.account',
-    'notes.apps.writer',
     'rest_framework',
     'rest_framework.authtoken',
     'rest_framework_swagger',
+
+    'notes.apps.account',
+    'notes.apps.writer',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -55,19 +56,14 @@ SWAGGER_SETTINGS = {
     'exclude_namespaces': [],
     'api_version': '1.0.0',
     'api_path': '/',
-    'enabled_methods': [
-        'get',
-        'post',
-        'put',
-        'delete'
-    ],
-    'api_key': "b5b7ccaf3650193c3aec866b19d49d3560f426c5",
+    'enabled_methods': ['get', 'post', 'put', 'delete'],
+    'api_key': 'bbc7f7b5492468db6a4a54a00c1b504930371792',
     'is_authenticated': False,
     'is_superuser': False,
     'permission_denied_handler': None,
     'info': {
-        'contact': 'apiteam@wordnik.com',
-        'description': 'This is a NoTes API. ',
+        'contact': 'office@ntsystems.rs',
+        'description': 'NT notes active API documentation.',
         'license': 'MIT',
         'licenseUrl': 'http://opensource.org/licenses/MIT',
         'title': 'NoTes',

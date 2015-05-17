@@ -12,7 +12,7 @@ class NotebookList(APIView):
     authentication_classes = (authentication.TokenAuthentication,)
 
     def get(self, request):
-        """List all notebooks
+        """List all notebooks.
         ---
         request_serializer: notes.apps.writer.resources.Notebooks
 
@@ -115,7 +115,7 @@ class NoteList(APIView):
               required: true
               type: string
               paramType: form
-            - name: content
+            - name: contents
               description: content for note.
               required: false
               type: string

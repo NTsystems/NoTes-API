@@ -1,0 +1,25 @@
+api:
+  build: .
+  ports:
+    - "80:80"
+  links:
+    - postgres:postgres
+    - rabbit:rabbit
+
+postgres:
+  image: postgres:9.3
+  ports:
+    - "5432:5432"
+  environment:
+    - POSTGRES_USER=ntsystems
+    - POSTGRES_PASSWORD=ntsystems
+
+rabbit:
+  image: rabbitmq:3.5
+  ports:
+    - "5672:5672"
+
+celery:
+  image: celery:3.1
+  links:
+    - rabbit:rabbit

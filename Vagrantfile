@@ -27,19 +27,18 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
             apt-get upgrade -y
 
             # install dev tools
-            apt-get install -y python-dev python-pip python-virtualenv libpq-dev
-            pip install fabric
-
-            # install docker
-            apt-get install -y lxc-docker
+            apt-get install -y python-dev python-pip libpq-dev lxc-docker
             gpasswd -a vagrant docker
 
             # install docker-compose
             curl -L https://github.com/docker/compose/releases/download/1.1.0/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
             chmod +x /usr/local/bin/docker-compose
 
-            # start postgresql instance
-            docker run --name notes-db -p 5432:5432 -e POSTGRES_PASSWORD=ntsystems -e POSTGRES_USER=ntsystems -d postgres:9.3
+            # start containers
+            cd /vagrant
+            pip install -r ./requirements/dev.txt
+            docker-compose up -d postgres
+            docker-compose up -d celery
         SCRIPT
     end
 end

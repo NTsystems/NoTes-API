@@ -7,18 +7,30 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.authtoken.models import Token
 
 from notes.apps.account.resources import Account, Profile
+from notes.apps.account.models import UserProfile
 
 
 class Register(APIView):
-    """Create new User"""
     def post(self, request):
-        """ Create user
+        """Creates new user account.
+        ---
+        parameters:
+            - name: e_mail
+              description: User's email address.
+              required: true
+              type: string
+              paramType: form
+            - name: password
+              description: User's password.
+              required: true
+              type: string
+              paramType: form
 
-        Args:
-            request (str): The first parameter
-        Returns:
-            HTTP_400_BAD_REQUEST or
-            HTTP_201_CREATED if user is created
+        responseMessages:
+            - code: 201
+              message: Registration succeeded.
+            - code: 400
+              message: Invalid or missing data supplied.
         """
         serializer = Account(data=request.data)
 
@@ -31,15 +43,25 @@ class Register(APIView):
 
 
 class TokenView(APIView):
-    """Create tokens"""
     def post(self, request):
-        """ Create token
+        """Creates or retrieves authentication token.
+        ---
+        parameters:
+            - name: e_mail
+              description: User's email address.
+              required: true
+              type: string
+              paramType: form
+            - name: password
+              description: User's password.
+              required: true
+              type: string
+              paramType: form
 
-        Args:
-            request (str): The first parameter
-        Returns:
-            HTTP_400_BAD_REQUEST or
-            HTTP_201_CREATED if token is created
+        responseMessages:
+            - code: 201
+            - code: 400
+              message: Account inactive or non-existent.
         """
         e_mail = request.data.get('e_mail')
         password = request.data.get('password')
@@ -53,54 +75,24 @@ class TokenView(APIView):
 
 
 class UpdateProfile(APIView):
-    """Update user profile"""
-
     permission_classes = (IsAuthenticated,)
     authentication_classes = (authentication.TokenAuthentication,)
 
     def put(self, request, id):
-        """ Create or update user profile
+        """Updates user profile information.
+        ---
+        request_serializer: notes.apps.account.resources.Profile
 
-        Args:
-            request (str): The first parameter
-            id (int): The second parameter.User id.
-        Returns:
-            HTTP_400_BAD_REQUEST or
-            HTTP_401_UNAUTHORIZED or
-            HTTP_204_NO_CONTENT if user profile is update
+        responseMessages:
+            - code: 204
+            - code: 400
+              message: Invalid or missing data supplied.
+            - code: 401
+              message: Unauthorized.
         """
-        serializer = Profile(request.user.profile, data=request.data, context={'request': request})
-
+        serializer = Profile(data=request.data, context={'request': request})
         if serializer.is_valid():
-            serializer.save(user=request.user)
-            return Response(serializer.validated_data, status=status.HTTP_204_NO_CONTENT)
+            profile, _ = UserProfile.objects.update_or_create(user=request.user, defaults=request.data)
+            return Response(status=status.HTTP_204_NO_CONTENT)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

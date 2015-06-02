@@ -37,7 +37,6 @@ class UserManager(BaseUserManager):
 
 class User(AbstractBaseUser, PermissionsMixin):
     e_mail = models.EmailField(unique=True)
-    is_admin = models.BooleanField(default=False)
 
     is_staff = models.BooleanField('staff status', default=False)
     is_active = models.BooleanField('active', default=True)

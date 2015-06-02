@@ -1,0 +1,14 @@
+# python stuff
+*.py[cod]
+
+# Testing
+.coverage
+htmlcov/
+
+# Sphinx
+docs/_build/
+
+# General
+.DS_Store
+.vagrant/
+.idea/

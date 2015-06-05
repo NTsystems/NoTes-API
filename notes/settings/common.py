@@ -89,9 +89,9 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(REPO_ROOT, 'assets')
 
 # rabbitmq is default broker
-BROKER_URL = 'amqp://backo:backo@localhost:5672/notes'
+BROKER_URL = 'amqp://admin:mypass@localhost:5672/'
 
-CELERY_RESULT_BACKEND = 'amqp://backo:backo@localhost:5672/notes'
+CELERY_RESULT_BACKEND = 'amqp://admin:mypass@localhost:5672/'
 
 CELERY_TASK_SERIALIZER = 'json'
 

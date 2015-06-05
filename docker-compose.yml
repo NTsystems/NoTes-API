@@ -30,7 +30,7 @@ celery:
     - rabbit:rabbit
 
 # container with rabbitmq worker - try!
-#worker:
+# worker:
 #  build: .
 #  command: ./run_celery.sh
 #  volumes:

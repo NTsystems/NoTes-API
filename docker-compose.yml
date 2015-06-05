@@ -2,9 +2,11 @@ api:
   build: .
   ports:
     - "80:80"
+  # set up links so that web knows about db, rabbit and celery
   links:
     - postgres:postgres
     - rabbit:rabbit
+    - celery:celery
 
 postgres:
   image: postgres:9.3
@@ -15,11 +17,24 @@ postgres:
     - POSTGRES_PASSWORD=ntsystems
 
 rabbit:
-  image: rabbitmq:3.5
+  image: tutum/rabbitmq
+  environment:
+    - RABBITMQ_PASS=mypass
   ports:
     - "5672:5672"
+    - "15672:15672"
 
 celery:
   image: celery:3.1
   links:
     - rabbit:rabbit
+
+# container with rabbitmq worker - try!
+#worker:
+#  build: .
+#  command: ./run_celery.sh
+#  volumes:
+#    - .:/app
+#  links:
+#    - postgres:postgres
+#    - rabbit:rabbit

@@ -9,6 +9,8 @@ from rest_framework.authtoken.models import Token
 from notes.apps.account.resources import Account, Profile
 from notes.apps.account.models import UserProfile
 
+from notes.apps.account.tasks import user_send_activation_email
+
 
 class Register(APIView):
     def post(self, request):
@@ -33,12 +35,16 @@ class Register(APIView):
               message: Invalid or missing data supplied.
         """
         serializer = Account(data=request.data)
+        
 
         if serializer.is_valid():
             serializer.save()
-
+            try:
+              user_send_activation_email.delay(serializer.data['id'])
+            except Exception as e:
+              print repr(e)
+              
             return Response(status=status.HTTP_201_CREATED)
-
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 

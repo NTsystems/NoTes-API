@@ -28,6 +28,8 @@ INSTALLED_APPS = (
     'rest_framework.authtoken',
     'rest_framework_swagger',
 
+    'djcelery',
+
     'notes.apps.account',
     'notes.apps.writer',
 )
@@ -85,3 +87,18 @@ TIME_ZONE = 'UTC'
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(REPO_ROOT, 'assets')
+
+# rabbitmq is default broker
+BROKER_URL = 'amqp://backo:backo@localhost:5672/notes'
+
+CELERY_RESULT_BACKEND = 'amqp://backo:backo@localhost:5672/notes'
+
+CELERY_TASK_SERIALIZER = 'json'
+
+# email configuration (gmail)
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'testntsystems'
+EMAIL_HOST_PASSWORD = 'testiranje'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = 'testntsystems@gmail.com'

@@ -1,22 +1,35 @@
 from __future__ import absolute_import
-from celery import shared_task
-from notes.celeryconf import app
-from django.contrib.auth import get_user_model
-from django.core.mail import send_mail
+
 import hashlib 
 import datetime
 import random
 
+from django.contrib.auth import get_user_model
+from django.core.mail import send_mail, EmailMultiAlternatives
+from django.template.loader import get_template
+from django.template import Context, Template
+
+from celery import shared_task
+from notes.celeryconf import app
+
+
+# templated email
 @app.task(bind=True)
-def user_send_activation_email(cls, user_id):
+def activation_email_template(cls, user_id):
     user = get_user_model().objects.get(id=user_id)
     email = user.e_mail
     salt = hashlib.sha1(str(random.random())).hexdigest()[:5]
     activation_key = hashlib.sha1(salt+email).hexdigest()
-    # Send email with activation key
+
+    htmly = get_template('activation.html')
+
+    context_kw = Context({'user': {'email': email, 'activation_key': activation_key}})
+    
     email_subject = 'Account confirmation - NoTes'
-    email_body = "Hey %s, thanks for signing up. To activate your account, click this link within 48hours \
-                  http://192.168.85.5:8000/swagger/#!/users/confirm/%s" % (email, activation_key)
-    print email
-    print get_user_model().objects.all()
-    send_mail(email_subject, email_body,'testntsystems@gmail', [email], fail_silently=False)
+    from_email = 'testntsystems@gmail.com'
+    html_content = htmly.render(context_kw)
+    msg = EmailMultiAlternatives(email_subject, html_content, 
+                                 from_email, [email])
+    msg.content_subtype = "html"
+    print user
+    msg.send()

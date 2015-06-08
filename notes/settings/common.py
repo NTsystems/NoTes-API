@@ -88,10 +88,13 @@ TIME_ZONE = 'UTC'
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(REPO_ROOT, 'assets')
 
+# template dirs
+# TEMPLATE_DIRS = ()
+
 # rabbitmq is default broker
 BROKER_URL = 'amqp://admin:mypass@localhost:5672/'
 
-CELERY_RESULT_BACKEND = 'amqp://admin:mypass@localhost:5672/'
+# CELERY_RESULT_BACKEND = 'amqp://admin:mypass@localhost:5672/'
 
 CELERY_TASK_SERIALIZER = 'json'
 

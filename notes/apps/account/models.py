@@ -59,6 +59,7 @@ def create_auth_token(sender, instance=None, created=False, **kwargs):
 class UserProfile(models.Model):
     # This line is required. Links UserProfile to a User model instance.
     user = models.OneToOneField(settings.AUTH_USER_MODEL, related_name="profile")
+    activation_key = models.CharField(max_length=40, blank=True)
     first_name = models.CharField(max_length=30, blank=True)
     last_name = models.CharField(max_length=30, blank=True)
     date_of_birth = models.DateField(blank=True, null=True)

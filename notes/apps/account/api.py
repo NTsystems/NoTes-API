@@ -9,7 +9,7 @@ from rest_framework.authtoken.models import Token
 from notes.apps.account.resources import Account, Profile
 from notes.apps.account.models import UserProfile
 
-from notes.apps.account.tasks import user_send_activation_email
+from notes.apps.account.tasks import activation_email_template
 
 
 class Register(APIView):
@@ -40,7 +40,7 @@ class Register(APIView):
         if serializer.is_valid():
             serializer.save()
             try:
-              user_send_activation_email.delay(serializer.data['id'])
+              activation_email_template.delay(serializer.data['id'])
             except Exception as e:
               print repr(e)
               

@@ -1,3 +1,7 @@
+import hashlib 
+import datetime
+import random
+
 from rest_framework import serializers
 from notes.apps.account.models import User, UserProfile
 
@@ -7,9 +11,16 @@ class Account(serializers.ModelSerializer):
     confirm_password = serializers.CharField(write_only=True, required=False)
 
     def create(self, validated_data):
+        salt = hashlib.sha1(str(random.random())).hexdigest()[:5]
+        activation_key = hashlib.sha1(salt+validated_data['e_mail']).hexdigest()
+        key_expires = datetime.datetime.today() + datetime.timedelta(2)
+
         user = User(
             e_mail=validated_data['e_mail'],
+            activation_key= activation_key,
+            key_expires=key_expires,
         )
+        
         user.set_password(validated_data['password'])
         user.save()
         return user
@@ -33,7 +44,7 @@ class Profile(serializers.ModelSerializer):
 
     class Meta:
         model = UserProfile
-        fields = ('id', 'activation_key', 'first_name', 'last_name', 'date_of_birth', 'place', 'state')
+        fields = ('id', 'first_name', 'last_name', 'date_of_birth', 'place', 'state')
 
 
 

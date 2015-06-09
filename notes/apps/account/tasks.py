@@ -1,13 +1,10 @@
 from __future__ import absolute_import
 
-import hashlib 
-import datetime
-import random
-
 from django.contrib.auth import get_user_model
 from django.core.mail import send_mail, EmailMultiAlternatives
 from django.template.loader import get_template
 from django.template import Context, Template
+from django.utils import timezone
 
 from celery import shared_task
 from notes.celeryconf import app
@@ -16,10 +13,11 @@ from notes.celeryconf import app
 # templated email
 @app.task(bind=True)
 def activation_email_template(cls, user_id):
+    print timezone.now()
     user = get_user_model().objects.get(id=user_id)
     email = user.e_mail
-    salt = hashlib.sha1(str(random.random())).hexdigest()[:5]
-    activation_key = hashlib.sha1(salt+email).hexdigest()
+    activation_key = user.activation_key
+    print activation_key
 
     htmly = get_template('activation.html')
 

@@ -46,6 +46,11 @@ def test(app=None):
         _manage("test")
 
 
+def worker():
+    """Run celery worker"""
+    _manage("celery worker")
+
+
 def run():
     """Starts development server."""
     local_ip = "0.0.0.0:8000"

@@ -10,17 +10,15 @@ from celery import shared_task
 from notes.celeryconf import app
 
 
-# templated email
 @app.task(bind=True)
 def activation_email_template(cls, user_id):
-    print timezone.now()
+    """Sends an activation key within templated email to the user"""
     user = get_user_model().objects.get(id=user_id)
     email = user.e_mail
     activation_key = user.activation_key
-    print activation_key
 
     htmly = get_template('activation.html')
-
+    
     context_kw = Context({'user': {'email': email, 'activation_key': activation_key}})
     
     email_subject = 'Account confirmation - NoTes'
@@ -29,5 +27,4 @@ def activation_email_template(cls, user_id):
     msg = EmailMultiAlternatives(email_subject, html_content, 
                                  from_email, [email])
     msg.content_subtype = "html"
-    print user
     msg.send()

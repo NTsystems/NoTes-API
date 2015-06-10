@@ -1,7 +1,6 @@
 from django.contrib.auth import authenticate, get_user_model
 from django.http import HttpResponse
 from django.utils import timezone
-# from django.shortcuts import get_object_or_404
 
 from rest_framework import status, authentication
 from rest_framework.views import APIView
@@ -11,7 +10,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.authtoken.models import Token
 
 from notes.apps.account.resources import Account, Profile
-from notes.apps.account.models import User, UserProfile
+from notes.apps.account.models import User
 
 from notes.apps.account.tasks import activation_email_template
 

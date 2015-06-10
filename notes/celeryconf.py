@@ -4,7 +4,7 @@ import os
 from celery import Celery
 from django.conf import settings
 
-# nisam sigurna za putanju...
+
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "notes.settings")
 
 app = Celery('notes.apps.account')

@@ -37,6 +37,7 @@ class UserManager(BaseUserManager):
 
 class User(AbstractBaseUser, PermissionsMixin):
     e_mail = models.EmailField(unique=True)
+    
     activation_key = models.CharField(max_length=40, blank=True, default=" ")
     key_expires = models.DateTimeField(default=timezone.now())
 

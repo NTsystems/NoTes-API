@@ -1,3 +1,5 @@
+import logging
+
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
@@ -6,6 +8,8 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 from rest_framework.authtoken.models import Token
+
+logger = logging.getLogger(__name__)
 
 
 class UserManager(BaseUserManager):
@@ -38,8 +42,11 @@ class UserManager(BaseUserManager):
 class User(AbstractBaseUser, PermissionsMixin):
     e_mail = models.EmailField(unique=True)
     
-    activation_key = models.CharField(max_length=40, blank=True, default=" ")
-    key_expires = models.DateTimeField(default=timezone.now())
+    try:
+        activation_key = models.CharField(max_length=40, blank=True, default=" ")
+        key_expires = models.DateTimeField(default=timezone.now())
+    except ValueError as v:
+        logger.warn("Problem with activation_key and key_expires values.")
 
     is_staff = models.BooleanField('staff status', default=False)
     is_active = models.BooleanField('active', default=False)

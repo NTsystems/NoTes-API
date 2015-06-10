@@ -1,6 +1,8 @@
+import logging
 from django.contrib.auth import authenticate, get_user_model
 from django.http import HttpResponse
 from django.utils import timezone
+from django.shortcuts import get_object_or_404
 
 from rest_framework import status, authentication
 from rest_framework.views import APIView
@@ -13,6 +15,8 @@ from notes.apps.account.resources import Account, Profile
 from notes.apps.account.models import User
 
 from notes.apps.account.tasks import activation_email_template
+
+logger = logging.getLogger(__name__)
 
 
 class Register(APIView):
@@ -43,8 +47,9 @@ class Register(APIView):
             serializer.save()
             try:
               activation_email_template.delay(serializer.data['id'])
+              logger.info("Email has been sent successfuly.")
             except Exception as e:
-              print repr(e)
+              logger.exception("Something went wrong with sending a mail.") 
               
             return Response(status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -110,7 +115,7 @@ class UpdateProfile(APIView):
 def activate_profile(request, activation_key, format=None):
   """User's profile activation."""
 
-  user = get_user_model().objects.get(activation_key=activation_key)
+  user = get_object_or_404(User, activation_key=activation_key)
 
   if user.is_active:
     return HttpResponse("Your have already activated profile.")
@@ -118,5 +123,5 @@ def activate_profile(request, activation_key, format=None):
     if user.key_expires < timezone.now():
       return HttpResponse("Activation key has expired.")
     user.is_active = True
-    user.save()
+    user.save(update_fields=['is_active'])
     return HttpResponse("Successfuly activated profile.")

@@ -4,6 +4,7 @@ import os
 # local project paths
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 REPO_ROOT = os.path.dirname(PROJECT_ROOT)
+LOG_DIR = os.path.dirname(PROJECT_ROOT)
 
 # application security
 AUTH_USER_MODEL = "account.User"
@@ -105,3 +106,48 @@ EMAIL_HOST_PASSWORD = 'testiranje'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = 'testntsystems@gmail.com'
+
+# logging
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+
+    'formatters': {
+        'standard': {
+            'format': "{'timestamp': '%(asctime)s', 'level': '%(levelname)s', 'module': '%(module)s', 'message': '%(message)s'}"
+        },
+
+        'detailed': {
+            'format': "{'timestamp': '%(asctime)s', 'level': '%(levelname)s', 'module': '%(module)s', 'function': '%(funcName)s', 'line': '%(lineno)d', 'message': '%(message)s'}"
+        }
+    },
+
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'standard',
+            'stream': 'ext://sys.stdout'
+        },
+
+        'logfile': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'formatter': 'detailed',
+            'filename': os.path.join(LOG_DIR, 'notes.log'),
+            'maxBytes': 5*1024*1024,
+            'backupCount': 5,
+            'encoding': 'utf8'
+        }
+    },
+
+    'loggers': {
+        'notes': {
+            'level': 'INFO',
+            'handlers': ['logfile']
+        }
+    },
+
+    'root': {
+        'level': 'NOTSET',
+        'handlers': ['console', 'logfile']
+    }
+}

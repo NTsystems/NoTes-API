@@ -1,4 +1,5 @@
 from __future__ import absolute_import
+import logging
 
 from django.contrib.auth import get_user_model
 from django.core.mail import send_mail, EmailMultiAlternatives
@@ -8,6 +9,8 @@ from django.utils import timezone
 
 from celery import shared_task
 from notes.celeryconf import app
+
+logger = logging.getLogger(__name__)
 
 
 @app.task(bind=True)

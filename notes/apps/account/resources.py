@@ -1,5 +1,12 @@
+import hashlib 
+import datetime
+import random
+import logging
+
 from rest_framework import serializers
 from notes.apps.account.models import User, UserProfile
+
+logger = logging.getLogger(__name__)
 
 
 class Account(serializers.ModelSerializer):
@@ -7,9 +14,20 @@ class Account(serializers.ModelSerializer):
     confirm_password = serializers.CharField(write_only=True, required=False)
 
     def create(self, validated_data):
+        try:
+            salt = hashlib.sha1(str(random.random())).hexdigest()[:5]
+            activation_key = hashlib.sha1(salt+validated_data['e_mail']).hexdigest()
+            key_expires = datetime.datetime.today() + datetime.timedelta(2)
+        except Exception as e:
+            logger.exception("Activation_key and key_expires exception.")
+
+
         user = User(
             e_mail=validated_data['e_mail'],
+            activation_key= activation_key,
+            key_expires=key_expires,
         )
+        
         user.set_password(validated_data['password'])
         user.save()
         return user

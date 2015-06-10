@@ -4,6 +4,7 @@ import os
 # local project paths
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 REPO_ROOT = os.path.dirname(PROJECT_ROOT)
+LOG_DIR = os.path.dirname(PROJECT_ROOT)
 
 # application security
 AUTH_USER_MODEL = "account.User"
@@ -27,6 +28,8 @@ INSTALLED_APPS = (
     'rest_framework',
     'rest_framework.authtoken',
     'rest_framework_swagger',
+
+    'djcelery',
 
     'notes.apps.account',
     'notes.apps.writer',
@@ -85,3 +88,66 @@ TIME_ZONE = 'UTC'
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(REPO_ROOT, 'assets')
+
+# template dirs
+# TEMPLATE_DIRS = ()
+
+# rabbitmq is default broker
+BROKER_URL = 'amqp://admin:mypass@localhost:5672/'
+
+# CELERY_RESULT_BACKEND = 'amqp://admin:mypass@localhost:5672/'
+
+CELERY_TASK_SERIALIZER = 'json'
+
+# email configuration (gmail)
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'testntsystems'
+EMAIL_HOST_PASSWORD = 'testiranje'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = 'testntsystems@gmail.com'
+
+# logging
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+
+    'formatters': {
+        'standard': {
+            'format': "{'timestamp': '%(asctime)s', 'level': '%(levelname)s', 'module': '%(module)s', 'message': '%(message)s'}"
+        },
+
+        'detailed': {
+            'format': "{'timestamp': '%(asctime)s', 'level': '%(levelname)s', 'module': '%(module)s', 'function': '%(funcName)s', 'line': '%(lineno)d', 'message': '%(message)s'}"
+        }
+    },
+
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'standard',
+            'stream': 'ext://sys.stdout'
+        },
+
+        'logfile': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'formatter': 'detailed',
+            'filename': os.path.join(LOG_DIR, 'notes.log'),
+            'maxBytes': 5*1024*1024,
+            'backupCount': 5,
+            'encoding': 'utf8'
+        }
+    },
+
+    'loggers': {
+        'notes': {
+            'level': 'INFO',
+            'handlers': ['logfile']
+        }
+    },
+
+    'root': {
+        'level': 'NOTSET',
+        'handlers': ['console', 'logfile']
+    }
+}

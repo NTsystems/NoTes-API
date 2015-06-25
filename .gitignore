@@ -1,5 +1,6 @@
 # python stuff
 *.py[cod]
+*.log
 
 # Testing
 .coverage

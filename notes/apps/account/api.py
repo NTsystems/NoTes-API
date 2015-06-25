@@ -12,7 +12,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.authtoken.models import Token
 
 from notes.apps.account.resources import Account, Profile
-from notes.apps.account.models import User
+from notes.apps.account.models import User, UserProfile
 
 from notes.apps.account.tasks import activation_email_template
 

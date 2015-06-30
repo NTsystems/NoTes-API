@@ -5,3 +5,6 @@ django-rest-swagger==0.2.9
 
 # database
 psycopg2==2.6
+
+# celery
+django-celery==3.1.16

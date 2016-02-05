@@ -45,7 +45,9 @@ class UserTests(APITestCase):
 
 class TokenTests(APITestCase):
     def setUp(self):
-        User.objects.create_user(e_mail="test@test.com", password="testpassword")
+        self.user = User.objects.create_user(e_mail="test@test.com", password="testpassword")
+        self.user.is_active = True
+        self.user.save(update_fields=['is_active'])
         self.client = APIClient()
 
     def test_create_token(self):
@@ -68,6 +70,8 @@ class TokenTests(APITestCase):
 class UpdateTests(APITestCase):
     def setUp(self):
         self.user = User.objects.create_user(e_mail="test@test.com", password="testpassword")
+        self.user.is_active = True
+        self.user.save(update_fields=['is_active'])
         self.client = APIClient()
 
     def test_update_profile(self):
@@ -125,8 +129,3 @@ class UpdateTests(APITestCase):
                                    content_type='application/json')
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-
-
-
-

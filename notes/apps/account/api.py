@@ -1,5 +1,5 @@
 import logging
-from django.contrib.auth import authenticate, get_user_model
+from django.contrib.auth import authenticate
 from django.http import HttpResponse
 from django.utils import timezone
 from django.shortcuts import get_object_or_404
@@ -46,11 +46,11 @@ class Register(APIView):
         if serializer.is_valid():
             serializer.save()
             try:
-              activation_email_template.delay(serializer.data['id'])
-              logger.info("Email has been sent successfuly.")
-            except Exception as e:
-              logger.exception("Something went wrong with sending a mail.") 
-              
+                activation_email_template.delay(serializer.data['id'])
+                logger.info("Email has been sent successfuly.")
+            except:
+                logger.exception("Something went wrong with sending a mail.")
+
             return Response(status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -111,17 +111,17 @@ class UpdateProfile(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(('GET','POST'))
+@api_view(('GET', 'POST'))
 def activate_profile(request, activation_key, format=None):
-  """User's profile activation."""
+    """User's profile activation."""
 
-  user = get_object_or_404(User, activation_key=activation_key)
+    user = get_object_or_404(User, activation_key=activation_key)
 
-  if user.is_active:
-    return HttpResponse("Your have already activated profile.")
-  else:
-    if user.key_expires < timezone.now():
-      return HttpResponse("Activation key has expired.")
-    user.is_active = True
-    user.save(update_fields=['is_active'])
-    return HttpResponse("Successfuly activated profile.")
+    if user.is_active:
+        return HttpResponse("Your have already activated profile.")
+    else:
+        if user.key_expires < timezone.now():
+            return HttpResponse("Activation key has expired.")
+        user.is_active = True
+        user.save(update_fields=['is_active'])
+        return HttpResponse("Successfuly activated profile.")

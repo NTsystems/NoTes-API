@@ -1,4 +1,4 @@
-import hashlib 
+import hashlib
 import datetime
 import random
 import logging
@@ -18,16 +18,16 @@ class Account(serializers.ModelSerializer):
             salt = hashlib.sha1(str(random.random())).hexdigest()[:5]
             activation_key = hashlib.sha1(salt+validated_data['e_mail']).hexdigest()
             key_expires = datetime.datetime.today() + datetime.timedelta(2)
-        except Exception as e:
+        except Exception:
             logger.exception("Activation_key and key_expires exception.")
 
 
         user = User(
             e_mail=validated_data['e_mail'],
-            activation_key= activation_key,
+            activation_key=activation_key,
             key_expires=key_expires,
         )
-        
+
         user.set_password(validated_data['password'])
         user.save()
         return user
@@ -52,6 +52,3 @@ class Profile(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
         fields = ('id', 'first_name', 'last_name', 'date_of_birth', 'place', 'state')
-
-
-

@@ -33,6 +33,7 @@ INSTALLED_APPS = (
 
     'notes.apps.account',
     'notes.apps.writer',
+    'notes.apps.tasks',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -44,6 +45,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'audit_log.middleware.UserLoggingMiddleware',
 )
 
 REST_FRAMEWORK = {
@@ -60,7 +62,7 @@ SWAGGER_SETTINGS = {
     'api_version': '1.0.0',
     'api_path': '/',
     'enabled_methods': ['get', 'post', 'put', 'delete'],
-    'api_key': 'bbc7f7b5492468db6a4a54a00c1b504930371792',
+    'api_key': '25d509a4d2a1b6db1ebc9d394cceb1ae902508ec',
     'is_authenticated': False,
     'is_superuser': False,
     'permission_denied_handler': None,

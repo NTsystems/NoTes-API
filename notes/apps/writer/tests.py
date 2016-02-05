@@ -12,9 +12,12 @@ from notes.apps.writer.models import Note, Notebook
 class NotebookTests(APITestCase):
 
     def setUp(self):
-        user = get_user_model().objects.create_user(e_mail='example@gmail.com', password='top_secret')
+        self.user = get_user_model().objects.create_user(e_mail='example@gmail.com', password='top_secret')
+        self.user.is_active = True
+        self.user.save(update_fields=['is_active'])
+    #   self.notebook = Notebook.objects.create(name='dummy', user=self.user)
         self.client = APIClient()
-        token = Token.objects.get(user_id=user.id)
+        token = Token.objects.get(user_id=self.user.id)
         self.client.credentials(HTTP_AUTHORIZATION="Token " + token.key)
 
     def test_create_notebook(self):
@@ -52,7 +55,6 @@ class NotebookTests(APITestCase):
     def test_no_notebooks(self):
         """There isn't any notebook"""
         response = self.client.get(reverse('notebook_list'), content_type='application/json')
-
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_delete_notebook(self):
@@ -76,6 +78,8 @@ class NoteTests(APITestCase):
 
     def setUp(self):
         self.user = get_user_model().objects.create_user(e_mail='example@gmail.com', password='top_secret')
+        self.user.is_active = True
+        self.user.save(update_fields=['is_active'])
         self.notebook = Notebook.objects.create(name='dummy', user=self.user)
         self.client = APIClient()
         token = Token.objects.get(user_id=self.user.id)
@@ -128,7 +132,7 @@ class NoteTests(APITestCase):
     def test_get_no_notes(self):
         """Empty notebook,no notes"""
         response = self.client.get(reverse('note_list', args=[self.notebook.id]), content_type='application/json')
-        
+
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_get_all_notes_no_notebook(self):
@@ -200,6 +204,8 @@ class Authorization(APITestCase):
 
     def setUp(self):
         self.user = get_user_model().objects.create_user(e_mail='example@gmail.com', password='top_secret')
+        self.user.is_active = True
+        self.user.save(update_fields=['is_active'])
         self.notebook = Notebook.objects.create(name='dummy', user=self.user)
         self.client = APIClient()
 
@@ -245,12 +251,3 @@ class Authorization(APITestCase):
                                    json.dumps(data), content_type='application/json')
 
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-
-
-
-
-
-
-
-
-

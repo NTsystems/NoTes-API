@@ -1,12 +1,12 @@
-api:
-  build: .
-  ports:
-    - "80:80"
-  # set up links so that web knows about db, rabbit and celery
-  links:
-    - postgres:postgres
-    - rabbit:rabbit
-    - celery:celery
+# api:
+#   build: .
+#   ports:
+#     - "80:80"
+#   # set up links so that web knows about db, rabbit and celery
+#   links:
+#     - postgres:postgres
+#     - rabbit:rabbit
+#     - celery:celery
 
 postgres:
   image: postgres:9.3
